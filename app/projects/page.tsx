@@ -14,44 +14,24 @@ const CARD_CONFIGS = [
   { width: "w-[80vw] md:w-[30vw]", height: "h-[45vh] md:h-[60vh]", offsetY: "mt-[5vh] md:mt-[12vh]" },
 ];
 
-function ProjectCard({ 
-  project, 
+function ProjectCard({
+  project,
   index,
   hoveredProjectIndex,
-  setHoveredProjectIndex
-}: { 
-  project: typeof PROJECTS[0]; 
+  setHoveredProjectIndex,
+  isVisible,
+}: {
+  project: typeof PROJECTS[0];
   index: number;
   hoveredProjectIndex: number | null;
   setHoveredProjectIndex: (val: number | null) => void;
+  isVisible: boolean;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
   const config = CARD_CONFIGS[index % CARD_CONFIGS.length];
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   const isOtherHovered = hoveredProjectIndex !== null && hoveredProjectIndex !== index;
 
   return (
     <div
-      ref={cardRef}
       className={`flex-shrink-0 ${config.width} ${config.offsetY} flex flex-col gap-3`}
       onMouseEnter={() => setHoveredProjectIndex(index)}
       onMouseLeave={() => setHoveredProjectIndex(null)}
@@ -64,7 +44,7 @@ function ProjectCard({
       {/* Image Container with clip-path reveal */}
       <motion.div
         initial={{ clipPath: "inset(100% 0 0 0)" }}
-        animate={isInView ? { clipPath: "inset(0% 0 0 0)" } : {}}
+        animate={isVisible ? { clipPath: "inset(0% 0 0 0)" } : {}}
         transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
         className={`relative ${config.height} overflow-hidden`}
       >
@@ -95,7 +75,7 @@ function ProjectCard({
       {/* Project Info */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        animate={isVisible ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.4 }}
         className="flex flex-col gap-1"
       >
@@ -115,6 +95,7 @@ export default function ProjectsPage() {
   const stripRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredProjectIndex, setHoveredProjectIndex] = useState<number | null>(null);
+  const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set([0]));
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -148,6 +129,12 @@ export default function ProjectsPage() {
       PROJECTS.length - 1
     );
     setActiveIndex(projectIndex);
+    setRevealedIndices((prev) => {
+      if (prev.has(projectIndex)) return prev;
+      const next = new Set(prev);
+      next.add(projectIndex);
+      return next;
+    });
   });
 
   // Progress bar width
@@ -245,12 +232,13 @@ export default function ProjectsPage() {
             style={{ x }}
           >
             {PROJECTS.map((project, i) => (
-              <ProjectCard 
-                key={project.id} 
-                project={project} 
-                index={i} 
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={i}
                 hoveredProjectIndex={hoveredProjectIndex}
                 setHoveredProjectIndex={setHoveredProjectIndex}
+                isVisible={revealedIndices.has(i)}
               />
             ))}
           </motion.div>

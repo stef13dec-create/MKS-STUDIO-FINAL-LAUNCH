@@ -19,24 +19,41 @@ export default function Home() {
   const [shineTrigger, setShineTrigger] = useState(0);
 
   useEffect(() => {
+    let touchStartY = 0;
+
+    const advance = (direction: 1 | -1) => {
+      setIsScrolling(true);
+      setActiveProject((prev) => (prev + direction + PROJECTS.length) % PROJECTS.length);
+      setShineTrigger((prev) => prev + 1);
+      setTimeout(() => setIsScrolling(false), 600);
+    };
+
     const handleWheel = (e: WheelEvent) => {
       if (isScrolling || menuOpen) return;
+      if (e.deltaY > 30) advance(1);
+      else if (e.deltaY < -30) advance(-1);
+    };
 
-      if (e.deltaY > 30) {
-        setIsScrolling(true);
-        setActiveProject((prev) => (prev + 1) % PROJECTS.length);
-        setShineTrigger((prev) => prev + 1);
-        setTimeout(() => setIsScrolling(false), 600);
-      } else if (e.deltaY < -30) {
-        setIsScrolling(true);
-        setActiveProject((prev) => (prev - 1 + PROJECTS.length) % PROJECTS.length);
-        setShineTrigger((prev) => prev + 1);
-        setTimeout(() => setIsScrolling(false), 600);
-      }
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (isScrolling || menuOpen) return;
+      const delta = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(delta) < 50) return;
+      advance(delta > 0 ? 1 : -1);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => window.removeEventListener("wheel", handleWheel);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
   }, [isScrolling, menuOpen]);
 
   return (

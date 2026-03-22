@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence }
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
-import { PROJECTS } from "@/data/projects";
+import { getProjects, Project } from "@/lib/firebase";
 
 // Staggered layout configuration for each project card
 const CARD_CONFIGS = [
@@ -21,7 +21,7 @@ function ProjectCard({
   setHoveredProjectIndex,
   isVisible,
 }: {
-  project: typeof PROJECTS[0];
+  project: Project;
   index: number;
   hoveredProjectIndex: number | null;
   setHoveredProjectIndex: (val: number | null) => void;
@@ -91,11 +91,27 @@ function ProjectCard({
 }
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredProjectIndex, setHoveredProjectIndex] = useState<number | null>(null);
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set([0]));
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -125,8 +141,8 @@ export default function ProjectsPage() {
   // Track active project based on scroll progress
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const projectIndex = Math.min(
-      Math.floor(latest * PROJECTS.length),
-      PROJECTS.length - 1
+      Math.floor(latest * projects.length),
+      projects.length - 1
     );
     setActiveIndex(projectIndex);
     setRevealedIndices((prev) => {
@@ -197,7 +213,7 @@ export default function ProjectsPage() {
               transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
               className="text-xs tracking-[0.3em] uppercase text-white/70 font-medium whitespace-nowrap"
             >
-              {PROJECTS[activeIndex].title}
+              {projects[activeIndex]?.title}
             </motion.span>
           </AnimatePresence>
         </div>
@@ -231,7 +247,7 @@ export default function ProjectsPage() {
             className="flex items-start gap-8 md:gap-16 pl-[10vw] md:pl-[15vw] pr-[20vw]"
             style={{ x }}
           >
-            {PROJECTS.map((project, i) => (
+            {projects.map((project, i) => (
               <ProjectCard
                 key={project.id}
                 project={project}

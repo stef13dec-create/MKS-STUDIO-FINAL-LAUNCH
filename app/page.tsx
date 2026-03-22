@@ -8,10 +8,11 @@ import Loader from "@/components/Loader";
 import CustomCursor from "@/components/CustomCursor";
 
 import LiquidImage from "@/components/LiquidImage";
-import { PROJECTS } from "@/data/projects";
+import { getProjects, Project } from "@/lib/firebase";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [activeProject, setActiveProject] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -19,11 +20,24 @@ export default function Home() {
   const [shineTrigger, setShineTrigger] = useState(0);
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     let touchStartY = 0;
 
     const advance = (direction: 1 | -1) => {
+      if (projects.length === 0) return;
       setIsScrolling(true);
-      setActiveProject((prev) => (prev + direction + PROJECTS.length) % PROJECTS.length);
+      setActiveProject((prev) => (prev + direction + projects.length) % projects.length);
       setShineTrigger((prev) => prev + 1);
       setTimeout(() => setIsScrolling(false), 600);
     };
@@ -54,7 +68,7 @@ export default function Home() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [isScrolling, menuOpen]);
+  }, [isScrolling, menuOpen, projects.length]);
 
   return (
     <>
@@ -222,7 +236,11 @@ export default function Home() {
 
         {/* Right Indicator */}
         <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-30 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 pointer-events-none">
-          {activeProject + 1} - {PROJECTS.length}
+          {projects.length > 0 ? (
+            <>{activeProject + 1} - {projects.length}</>
+          ) : (
+            <>... - ...</>
+          )}
         </div>
 
         {/* Footer */}
@@ -254,24 +272,26 @@ export default function Home() {
               className="relative w-[65vw] md:w-[28vw] h-[55vh] md:h-[65vh] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[0.95]"
               onMouseEnter={() => setShineTrigger(prev => prev + 1)}
             >
-              <TransitionLink href={`/projects/${PROJECTS[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeProject}
-                    initial={{ opacity: 0, y: "100%" }}
-                    animate={{ opacity: 1, y: "0%" }}
-                    exit={{ opacity: 0, y: "-100%" }}
-                    transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-                    className="absolute inset-0"
-                  >
-                    <LiquidImage
-                      src={PROJECTS[activeProject].image}
-                      alt={PROJECTS[activeProject].title}
-                      className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.1]"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </TransitionLink>
+              {projects[activeProject] && (
+                <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeProject}
+                      initial={{ opacity: 0, y: "100%" }}
+                      animate={{ opacity: 1, y: "0%" }}
+                      exit={{ opacity: 0, y: "-100%" }}
+                      transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                      className="absolute inset-0"
+                    >
+                      <LiquidImage
+                        src={projects[activeProject].image}
+                        alt={projects[activeProject].title}
+                        className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.1]"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </TransitionLink>
+              )}
             </div>
 
             {/* Project Info */}
@@ -285,8 +305,12 @@ export default function Home() {
                   transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                   className="flex flex-col items-center"
                 >
-                  <span className="text-sm md:text-base tracking-[0.2em] pl-[0.2em] uppercase font-medium">{PROJECTS[activeProject].title}</span>
-                  <span className="text-[10px] md:text-xs tracking-widest pl-[0.1em] uppercase opacity-70 mt-1">{PROJECTS[activeProject].subtitle}</span>
+                  {projects[activeProject] && (
+                    <>
+                      <span className="text-sm md:text-base tracking-[0.2em] pl-[0.2em] uppercase font-medium">{projects[activeProject].title}</span>
+                      <span className="text-[10px] md:text-xs tracking-widest pl-[0.1em] uppercase opacity-70 mt-1">{projects[activeProject].subtitle}</span>
+                    </>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>

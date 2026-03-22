@@ -1,19 +1,46 @@
-"use client";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { PROJECTS } from "@/data/projects";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
-import { useEffect, useState } from "react";
+import { getProjects, Project } from "@/lib/firebase";
 
 export default function ProjectDetail() {
   const params = useParams();
   const id = params?.id as string;
-  const projectIndex = PROJECTS.findIndex((p) => p.id === id);
-  const project = PROJECTS[projectIndex];
+  const [project, setProject] = useState<Project | null>(null);
+  const [nextProject, setNextProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const allProjects = await getProjects();
+        const currentIndex = allProjects.findIndex(p => p.id === id);
+        
+        if (currentIndex !== -1) {
+          setProject(allProjects[currentIndex]);
+          setNextProject(allProjects[(currentIndex + 1) % allProjects.length]);
+        }
+      } catch (error) {
+        console.error("Error fetching project:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-[#1a1c18] text-white">
+        <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">Loading Project...</div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (
@@ -25,8 +52,6 @@ export default function ProjectDetail() {
       </div>
     );
   }
-
-  const nextProject = PROJECTS[(projectIndex + 1) % PROJECTS.length];
 
   return (
     <div className="bg-[#1a1c18] text-white min-h-screen font-sans selection:bg-white selection:text-black">
@@ -135,22 +160,24 @@ export default function ProjectDetail() {
       )}
 
       {/* Next Project Footer */}
-      <section className="relative h-[60vh] md:h-[80vh] w-full overflow-hidden group">
-        <TransitionLink href={`/projects/${nextProject.id}`} className="block w-full h-full cursor-none" data-cursor-text="NEXT">
-          <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700 z-10" />
-          <Image 
-            src={nextProject.image} 
-            alt={nextProject.title} 
-            fill
-            className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-6">
-            <span className="text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 opacity-70 group-hover:translate-y-[-10px] transition-transform duration-700">Next Project</span>
-            <h2 className="text-4xl md:text-7xl lg:text-8xl font-medium tracking-tighter uppercase group-hover:scale-105 transition-transform duration-700">{nextProject.title}</h2>
-            <div className="mt-8 overflow-hidden h-px w-20 bg-white/30 group-hover:w-40 transition-all duration-700" />
-          </div>
-        </TransitionLink>
-      </section>
+      {nextProject && (
+        <section className="relative h-[60vh] md:h-[80vh] w-full overflow-hidden group">
+          <TransitionLink href={`/projects/${nextProject.id}`} className="block w-full h-full cursor-none" data-cursor-text="NEXT">
+            <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700 z-10" />
+            <Image 
+              src={nextProject.image} 
+              alt={nextProject.title} 
+              fill
+              className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-6">
+              <span className="text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 opacity-70 group-hover:translate-y-[-10px] transition-transform duration-700">Next Project</span>
+              <h2 className="text-4xl md:text-7xl lg:text-8xl font-medium tracking-tighter uppercase group-hover:scale-105 transition-transform duration-700">{nextProject.title}</h2>
+              <div className="mt-8 overflow-hidden h-px w-20 bg-white/30 group-hover:w-40 transition-all duration-700" />
+            </div>
+          </TransitionLink>
+        </section>
+      )}
 
       {/* Footer Minimal */}
       <footer className="p-10 text-center text-[10px] tracking-[0.3em] uppercase opacity-40 font-medium">

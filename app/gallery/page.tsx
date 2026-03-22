@@ -6,25 +6,44 @@ import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import { Accessibility } from "lucide-react";
 import CustomCursor from "@/components/CustomCursor";
-import { GALLERY_IMAGES } from "@/data/projects";
+import { getGalleryImages, GalleryImage } from "@/lib/firebase";
+import { useEffect } from "react";
 
 export default function Gallery() {
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getGalleryImages();
+        setGalleryImages(data);
+      } catch (error) {
+        console.error("Error fetching gallery images:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
   const nextSlide = () => {
+    if (galleryImages.length === 0) return;
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % GALLERY_IMAGES.length);
+    setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
   };
 
   const prevSlide = () => {
+    if (galleryImages.length === 0) return;
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length);
+    setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
   };
 
-  const currentImage = GALLERY_IMAGES[currentIndex];
-  const nextImageIndex = (currentIndex + 1) % GALLERY_IMAGES.length;
-  const nextImage = GALLERY_IMAGES[nextImageIndex];
+  const currentImage = galleryImages[currentIndex];
+  const nextImageIndex = galleryImages.length > 0 ? (currentIndex + 1) % galleryImages.length : 0;
+  const nextImage = galleryImages[nextImageIndex];
 
   const leftImageVariants = {
     enter: (dir: number) => ({
@@ -62,6 +81,14 @@ export default function Gallery() {
   const formatNumber = (num: number) => {
     return num.toString().padStart(2, '0');
   };
+
+  if (loading || !currentImage) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-[#51524c] text-white">
+        <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">Loading Gallery...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#51524c] text-white font-sans">
@@ -181,7 +208,7 @@ export default function Gallery() {
         {/* Bottom Left Counter */}
         <div className="absolute bottom-8 left-8">
           <span className="text-xs tracking-widest font-medium">
-            {formatNumber(currentIndex + 1)} - {formatNumber(GALLERY_IMAGES.length)}
+            {formatNumber(currentIndex + 1)} - {formatNumber(galleryImages.length)}
           </span>
         </div>
 

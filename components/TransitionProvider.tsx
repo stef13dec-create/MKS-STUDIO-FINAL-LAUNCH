@@ -33,7 +33,8 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   };
 
   useEffect(() => {
-    if (phase === "in" && targetHref === pathname) {
+    const normalize = (p: string | null) => (p && p !== "/" ? p.replace(/\/$/, "") : p);
+    if (phase === "in" && normalize(targetHref) === normalize(pathname)) {
       // Once route changes, animate out
       setPhase("out");
       setTimeout(() => {

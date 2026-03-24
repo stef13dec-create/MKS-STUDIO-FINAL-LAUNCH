@@ -59,7 +59,7 @@ function ProjectCard({
         className={`relative ${config.heightClass} overflow-hidden`}
       >
         <TransitionLink
-          href={getPath(`/projects/${project.id}`)}
+          href={`/projects/${project.id}`}
           className="group block w-full h-full relative"
           data-cursor-text="VIEW"
         >
@@ -254,7 +254,7 @@ export default function ProjectsPage() {
       <div className="fixed inset-0 z-40 pointer-events-none">
         {/* Header */}
         <header className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between items-start pointer-events-auto">
-          <Link href={getPath("/")} className="group flex items-center gap-2">
+          <Link href="/" className="group flex items-center gap-2">
             <Image 
               src={getPath("/logo.png")} 
               alt="MKS Studio Logo" 
@@ -267,13 +267,13 @@ export default function ProjectsPage() {
 
           <div className="flex items-center gap-6 ml-auto">
             <TransitionLink
-              href={getPath("/gallery")}
+              href="/gallery"
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
               Gallery
             </TransitionLink>
             <TransitionLink
-              href={getPath("/contact")}
+              href="/contact"
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
               Contact

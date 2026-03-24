@@ -98,7 +98,7 @@ export default function Gallery() {
       <div className="relative w-1/2 h-full overflow-hidden bg-black">
         {/* Logo top left */}
         <div className="absolute top-0 left-0 p-1 md:p-2 z-50 mix-blend-difference">
-          <TransitionLink href={getPath("/")} className="group">
+          <TransitionLink href="/" className="group">
             <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={240} height={105} className="w-[120px] md:w-[180px] lg:w-[240px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
         </div>
@@ -156,7 +156,7 @@ export default function Gallery() {
         {/* Top Right Close */}
         <div className="absolute top-8 right-8 z-50 flex items-center gap-4">
           <span className="text-xs tracking-widest uppercase font-medium">CLOSE</span>
-          <TransitionLink href={getPath("/")} className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors group">
+          <TransitionLink href="/" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors group">
             <div className="flex flex-col gap-1.5 transition-transform group-hover:scale-90">
               <div className="w-4 h-px bg-current" />
               <div className="w-4 h-px bg-current" />

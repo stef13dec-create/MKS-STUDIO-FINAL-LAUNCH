@@ -111,12 +111,12 @@ export default function Home() {
             >
               {/* Header inside menu */}
               <header className="w-full flex justify-between items-start">
-                <Link href={getPath("/")} className="flex flex-col items-start gap-1 group" onClick={() => setMenuOpen(false)}>
+                <Link href="/" className="flex flex-col items-start gap-1 group" onClick={() => setMenuOpen(false)}>
                   <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
                 </Link>
 
                 <div className="flex items-center gap-6">
-                  <Link href={getPath("/gallery")} onClick={() => setMenuOpen(false)} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
+                  <Link href="/gallery" onClick={() => setMenuOpen(false)} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
                     Gallery
                   </Link>
                   <button
@@ -137,7 +137,7 @@ export default function Home() {
                     {["Home", "Projects", "About", "Contact"].map((item, i) => (
                       <li key={item} onMouseEnter={() => setHoveredItem(i)} onMouseLeave={() => setHoveredItem(null)}>
                         <Link
-                          href={item === "Home" ? getPath("/") : getPath(`/${item.toLowerCase()}`)}
+                          href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
                           onClick={() => setMenuOpen(false)}
                           className="flex items-center group"
                           data-cursor-text="GO"
@@ -210,12 +210,12 @@ export default function Home() {
       >
         {/* Header */}
         <header className="absolute top-0 left-0 w-full p-4 md:p-6 z-40 flex justify-between items-start">
-          <Link href={getPath("/")} className="absolute top-0 left-0 p-1 md:p-2 group">
+          <Link href="/" className="absolute top-0 left-0 p-1 md:p-2 group">
             <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w-[150px] object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </Link>
 
           <div className="flex items-center gap-6 ml-auto">
-            <TransitionLink href={getPath("/gallery")} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
+            <TransitionLink href="/gallery" className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
               Gallery
             </TransitionLink>
             <button
@@ -248,7 +248,7 @@ export default function Home() {
         <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
           <div className="hidden md:block">Commercial Interiors</div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex justify-center w-full max-w-[200px]">
-            <TransitionLink href={getPath("/projects")} className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">
+            <TransitionLink href="/projects" className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">
               View All Projects
             </TransitionLink>
           </div>
@@ -274,7 +274,7 @@ export default function Home() {
               onMouseEnter={() => setShineTrigger(prev => prev + 1)}
             >
               {projects[activeProject] && (
-                <TransitionLink href={getPath(`/projects/${projects[activeProject].id}`)} className="block w-full h-full" data-cursor-text="VIEW">
+                <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeProject}

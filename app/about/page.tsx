@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
+import { getPath } from "@/lib/utils";
 
 export default function About() {
   return (
@@ -12,11 +13,11 @@ export default function About() {
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 w-full p-4 md:p-6 z-50 flex justify-between items-start mix-blend-difference">
-        <TransitionLink href="/" className="absolute top-0 left-0 p-1 md:p-2 group">
-          <Image src="/logo.png" alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+        <TransitionLink href={getPath("/")} className="absolute top-0 left-0 p-1 md:p-2 group">
+          <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
         </TransitionLink>
         <div className="flex items-center gap-6 ml-auto">
-          <TransitionLink href="/contact" className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
+          <TransitionLink href={getPath("/contact")} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
             Contact
           </TransitionLink>
         </div>
@@ -41,7 +42,7 @@ export default function About() {
           className="relative w-full aspect-[21/9] mb-24 overflow-hidden rounded-sm"
         >
           <Image
-            src="/projects/timisoara-hub-hero.png"
+            src={getPath("/projects/timisoara-hub-hero.png")}
             alt="MKS Studio Interior"
             fill
             className="object-cover"

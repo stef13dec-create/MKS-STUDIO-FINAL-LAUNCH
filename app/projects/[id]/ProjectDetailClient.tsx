@@ -9,6 +9,7 @@ import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
 import { getProject, getProjects, Project } from "@/lib/firebase";
+import { getPath } from "@/lib/utils";
 
 export default function ProjectDetailClient({ id }: { id: string }) {
   const [project, setProject] = useState<Project | null>(null);
@@ -54,7 +55,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1c18] text-white">
         <div className="text-center">
           <h1 className="text-4xl font-sans font-light tracking-widest uppercase mb-4">Project Not Found</h1>
-          <TransitionLink href="/" className="underline underline-offset-4 opacity-70 hover:opacity-100 transition-opacity">Back to Home</TransitionLink>
+          <TransitionLink href={getPath("/")} className="underline underline-offset-4 opacity-70 hover:opacity-100 transition-opacity">Back to Home</TransitionLink>
         </div>
       </div>
     );
@@ -66,9 +67,9 @@ export default function ProjectDetailClient({ id }: { id: string }) {
       
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 w-full p-6 z-50 flex justify-between items-center mix-blend-difference">
-        <Link href="/" className="group">
+        <Link href={getPath("/")} className="group">
           <Image 
-            src="/logo.png" 
+            src={getPath("/logo.png")} 
             alt="MKS Studio Logo" 
             width={180} 
             height={80} 
@@ -76,10 +77,10 @@ export default function ProjectDetailClient({ id }: { id: string }) {
           />
         </Link>
         <div className="flex items-center gap-8">
-          <TransitionLink href="/projects" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
+          <TransitionLink href={getPath("/projects")} className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
             All Projects
           </TransitionLink>
-          <TransitionLink href="/" className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors group">
+          <TransitionLink href={getPath("/")} className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors group">
              <span className="text-xl group-hover:scale-110 transition-transform">&times;</span>
           </TransitionLink>
         </div>
@@ -162,6 +163,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
                   loading="lazy"
                   className="object-cover transition-transform duration-1000 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 80vw"
+                  referrerPolicy="no-referrer"
                 />
               </div>
             </motion.div>
@@ -172,13 +174,14 @@ export default function ProjectDetailClient({ id }: { id: string }) {
       {/* Next Project Footer */}
       {nextProject && (
         <section className="relative h-[60vh] md:h-[80vh] w-full overflow-hidden group">
-          <TransitionLink href={`/projects/${nextProject.id}`} className="block w-full h-full cursor-none" data-cursor-text="NEXT">
+          <TransitionLink href={getPath(`/projects/${nextProject.id}`)} className="block w-full h-full cursor-none" data-cursor-text="NEXT">
             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700 z-10" />
             <Image 
               src={nextProject.image} 
               alt={nextProject.title} 
               fill
               className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
+              referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-6">
               <span className="text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 opacity-70 group-hover:translate-y-[-10px] transition-transform duration-700">Next Project</span>

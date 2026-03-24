@@ -10,9 +10,11 @@ import {
   animate,
 } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import { getProjects, Project } from "@/lib/firebase";
+import { getPath } from "@/lib/utils";
 
 // Staggered layout configuration for each project card
 const CARD_CONFIGS = [
@@ -57,7 +59,7 @@ function ProjectCard({
         className={`relative ${config.heightClass} overflow-hidden`}
       >
         <TransitionLink
-          href={`/projects/${project.id}`}
+          href={getPath(`/projects/${project.id}`)}
           className="group block w-full h-full relative"
           data-cursor-text="VIEW"
         >
@@ -76,6 +78,7 @@ function ProjectCard({
               fill
               className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.08]"
               sizes="(max-width: 768px) 80vw, 40vw"
+              referrerPolicy="no-referrer"
             />
           </div>
         </TransitionLink>
@@ -251,17 +254,26 @@ export default function ProjectsPage() {
       <div className="fixed inset-0 z-40 pointer-events-none">
         {/* Header */}
         <header className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between items-start pointer-events-auto">
-
+          <Link href={getPath("/")} className="group flex items-center gap-2">
+            <Image 
+              src={getPath("/logo.png")} 
+              alt="MKS Studio Logo" 
+              width={120} 
+              height={54} 
+              className="w-[80px] md:w-[120px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" 
+              priority 
+            />
+          </Link>
 
           <div className="flex items-center gap-6 ml-auto">
             <TransitionLink
-              href="/gallery"
+              href={getPath("/gallery")}
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
               Gallery
             </TransitionLink>
             <TransitionLink
-              href="/contact"
+              href={getPath("/contact")}
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
               Contact

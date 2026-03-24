@@ -6,6 +6,7 @@ import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import Loader from "@/components/Loader";
 import CustomCursor from "@/components/CustomCursor";
+import { getPath } from "@/lib/utils";
 
 import LiquidImage from "@/components/LiquidImage";
 import { getProjects, Project } from "@/lib/firebase";
@@ -110,8 +111,8 @@ export default function Home() {
             >
               {/* Header inside menu */}
               <header className="w-full flex justify-between items-start">
-                <Link href="/" className="flex flex-col items-start gap-1 group" onClick={() => setMenuOpen(false)}>
-                  <Image src="/logo.png" alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+                <Link href={getPath("/")} className="flex flex-col items-start gap-1 group" onClick={() => setMenuOpen(false)}>
+                  <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
                 </Link>
 
                 <div className="flex items-center gap-6">
@@ -136,7 +137,7 @@ export default function Home() {
                     {["Home", "Projects", "About", "Contact"].map((item, i) => (
                       <li key={item} onMouseEnter={() => setHoveredItem(i)} onMouseLeave={() => setHoveredItem(null)}>
                         <Link
-                          href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                          href={item === "Home" ? getPath("/") : getPath(`/${item.toLowerCase()}`)}
                           onClick={() => setMenuOpen(false)}
                           className="flex items-center group"
                           data-cursor-text="GO"
@@ -209,8 +210,8 @@ export default function Home() {
       >
         {/* Header */}
         <header className="absolute top-0 left-0 w-full p-4 md:p-6 z-40 flex justify-between items-start">
-          <Link href="/" className="absolute top-0 left-0 p-1 md:p-2 group">
-            <Image src="/logo.png" alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w-[110px] lg:w-[150px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+          <Link href={getPath("/")} className="absolute top-0 left-0 p-1 md:p-2 group">
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w patch object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </Link>
 
           <div className="flex items-center gap-6 ml-auto">
@@ -244,7 +245,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex justify-between items-end z-30 text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
+        <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
           <div className="hidden md:block">Commercial Interiors</div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex justify-center w-full max-w-[200px]">
             <TransitionLink href="/projects" className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">

@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useRouter, usePathname } from "next/navigation";
 
+import { getPath } from '@/lib/utils';
+
 interface TransitionContextType {
   navigate: (href: string) => void;
 }
@@ -27,7 +29,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     
     // Wait for columns to cover screen
     setTimeout(() => {
-      router.push(href);
+      router.push(getPath(href));
     }, 1000); // 0.8s duration + 0.2s max delay
   };
 

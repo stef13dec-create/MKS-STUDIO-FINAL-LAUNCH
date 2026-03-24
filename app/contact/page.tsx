@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
+import { getPath } from "@/lib/utils";
 
 export default function Contact() {
   return (
@@ -14,8 +15,8 @@ export default function Contact() {
       <div className="relative hidden md:block w-1/2 h-full overflow-hidden">
         {/* Logo top left */}
         <div className="absolute top-0 left-0 p-1 md:p-2 z-50 mix-blend-difference">
-          <TransitionLink href="/" className="flex flex-col items-start gap-1 group">
-            <Image src="/logo.png" alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+          <TransitionLink href={getPath("/")} className="flex flex-col items-start gap-1 group">
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
         </div>
 
@@ -26,7 +27,7 @@ export default function Contact() {
           className="absolute inset-0"
         >
           <Image
-            src="/projects/bucharest-hq-hero.png"
+            src={getPath("/projects/bucharest-hq-hero.png")}
             alt="MKS Studio Architecture Detail"
             fill
             className="object-cover"
@@ -43,14 +44,14 @@ export default function Contact() {
 
         {/* Mobile Logo */}
         <div className="md:hidden mb-4">
-          <TransitionLink href="/" className="flex flex-col items-start gap-1 group">
-            <Image src="/logo.png" alt="MKS Studio Logo" width={300} height={135} className="w-[140px] sm:w-[180px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+          <TransitionLink href={getPath("/")} className="flex flex-col items-start gap-1 group">
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] sm:w-[180px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
         </div>
 
         {/* Right Corner Nav */}
         <div className="absolute top-8 right-8 z-50 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 mix-blend-difference">
-          <TransitionLink href="/about" className="hover:opacity-70 transition-opacity text-white">
+          <TransitionLink href={getPath("/about")} className="hover:opacity-70 transition-opacity text-white">
             About
           </TransitionLink>
         </div>

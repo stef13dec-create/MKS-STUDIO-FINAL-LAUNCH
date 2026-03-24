@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "dummy-key",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
@@ -37,7 +37,14 @@ export interface GalleryImage {
   alt: string;
 }
 
+// Helper to determine if we should skip actual Firebase calls during static build
+const isBuilding = typeof window === 'undefined' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
 export async function getProjects(): Promise<Project[]> {
+  if (isBuilding) {
+    console.log("Skipping getProjects() during build (no API key)");
+    return [];
+  }
   const projectsCol = collection(db, 'projects');
   const projectSnapshot = await getDocs(projectsCol);
   const projectList = projectSnapshot.docs.map(doc => ({
@@ -48,6 +55,10 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getProject(id: string): Promise<Project | null> {
+  if (isBuilding) {
+    console.log(`Skipping getProject(${id}) during build (no API key)`);
+    return null;
+  }
   const docRef = doc(db, "projects", id);
   const docSnap = await getDoc(docRef);
   
@@ -58,6 +69,10 @@ export async function getProject(id: string): Promise<Project | null> {
 }
 
 export async function getGalleryImages(): Promise<GalleryImage[]> {
+  if (isBuilding) {
+    console.log("Skipping getGalleryImages() during build (no API key)");
+    return [];
+  }
   const galleryCol = collection(db, 'gallery');
   const gallerySnapshot = await getDocs(galleryCol);
   const galleryList = gallerySnapshot.docs.map(doc => ({

@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-import { getPath } from '@/lib/utils';
 
 interface LiquidImageProps {
   src: string;
@@ -150,8 +149,9 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
     };
 
     const textureLoader = new THREE.TextureLoader();
+    textureLoader.crossOrigin = 'anonymous';
     textureLoader.load(
-      getPath(src),
+      src,
       (texture) => {
         material = new THREE.ShaderMaterial({
           vertexShader,

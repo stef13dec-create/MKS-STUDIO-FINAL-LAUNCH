@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   output: 'export',
+  basePath: process.env.NODE_ENV === 'production' ? '/MKS-STUDIO-FINAL-LAUNCH' : '',
   images: {
     unoptimized: true,
     remotePatterns: [

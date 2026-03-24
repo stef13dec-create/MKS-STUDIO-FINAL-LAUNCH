@@ -122,7 +122,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
             >
               <div className="group relative w-full h-full">
                 <Image
-                  src={img}
+                  src={getPath(img)}
                   alt={`${project.title} Gallery ${index + 1}`}
                   fill
                   loading="lazy"
@@ -142,7 +142,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
           <TransitionLink href={`/projects/${nextProject.id}`} className="block w-full h-full cursor-none" data-cursor-text="NEXT">
             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700 z-10" />
             <Image 
-              src={nextProject.image} 
+              src={getPath(nextProject.image)}
               alt={nextProject.title} 
               fill
               className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"

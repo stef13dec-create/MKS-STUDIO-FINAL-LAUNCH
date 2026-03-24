@@ -101,7 +101,7 @@ export default function Gallery() {
             className="absolute inset-0"
           >
             <Image
-              src={currentImage.src}
+              src={getPath(currentImage.src)}
               alt={currentImage.alt}
               fill
               className="object-cover"
@@ -162,7 +162,7 @@ export default function Gallery() {
               className="absolute inset-0"
             >
               <Image
-                src={nextImage.src}
+                src={getPath(nextImage.src)}
                 alt={nextImage.alt}
                 fill
                 className="object-cover"

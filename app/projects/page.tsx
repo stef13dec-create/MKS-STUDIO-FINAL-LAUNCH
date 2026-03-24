@@ -73,7 +73,7 @@ function ProjectCard({
             }}
           >
             <Image
-              src={project.image}
+              src={getPath(project.image)}
               alt={project.title}
               fill
               className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.08]"

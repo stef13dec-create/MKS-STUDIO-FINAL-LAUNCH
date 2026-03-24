@@ -1,33 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import { Accessibility } from "lucide-react";
 import CustomCursor from "@/components/CustomCursor";
-import { getGalleryImages, GalleryImage } from "@/lib/firebase";
+import { GalleryImage, galleryImages as galleryData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
 
 export default function Gallery() {
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [galleryImages] = useState<GalleryImage[]>(galleryData);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getGalleryImages();
-        setGalleryImages(data);
-      } catch (error) {
-        console.error("Error fetching gallery images:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
 
   const nextSlide = () => {
     if (galleryImages.length === 0) return;
@@ -82,7 +67,7 @@ export default function Gallery() {
     return num.toString().padStart(2, '0');
   };
 
-  if (loading || !currentImage) {
+  if (!currentImage) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#51524c] text-white">
         <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">Loading Gallery...</div>

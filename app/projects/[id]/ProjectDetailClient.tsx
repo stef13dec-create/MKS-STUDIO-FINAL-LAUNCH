@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
@@ -8,47 +7,13 @@ import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
-import { getProject, getProjects, Project } from "@/lib/firebase";
+import { projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
 
 export default function ProjectDetailClient({ id }: { id: string }) {
-  const [project, setProject] = useState<Project | null>(null);
-  const [nextProject, setNextProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Fetch current project by ID (single doc read — fast)
-    getProject(id)
-      .then((proj) => {
-        setProject(proj);
-      })
-      .catch((error) => {
-        console.error("Error fetching project:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    // Fetch next project in parallel without blocking the main render
-    getProjects()
-      .then((allProjects) => {
-        const currentIndex = allProjects.findIndex((p) => p.id === id);
-        if (currentIndex !== -1) {
-          setNextProject(allProjects[(currentIndex + 1) % allProjects.length]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching next project:", error);
-      });
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-[#1a1c18] text-white">
-        <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">Loading Project...</div>
-      </div>
-    );
-  }
+  const project = projectsData.find((p) => p.id === id) ?? null;
+  const currentIndex = projectsData.findIndex((p) => p.id === id);
+  const nextProject = currentIndex !== -1 ? projectsData[(currentIndex + 1) % projectsData.length] : null;
 
   if (!project) {
     return (

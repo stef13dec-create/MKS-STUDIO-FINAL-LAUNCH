@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
-import { getProjects, Project } from "@/lib/firebase";
+import { Project, projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
 
 // Staggered layout configuration for each project card
@@ -103,8 +103,8 @@ function ProjectCard({
 }
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [projects] = useState<Project[]>(projectsData);
+  const loading = false;
   const containerRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -119,20 +119,6 @@ export default function ProjectsPage() {
   // Separate motion value for the progress bar (0 → 1)
   const progressMV = useMotionValue(0);
   const progressBarWidth = useTransform(progressMV, [0, 1], ["0%", "100%"]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getProjects();
-        setProjects(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
 
   const updateDimensions = useCallback(() => {
     if (stripRef.current) setStripWidth(stripRef.current.scrollWidth);

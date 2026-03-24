@@ -9,28 +9,16 @@ import CustomCursor from "@/components/CustomCursor";
 import { getPath } from "@/lib/utils";
 
 import LiquidImage from "@/components/LiquidImage";
-import { getProjects, Project } from "@/lib/firebase";
+import { Project, projects as projectsData } from "@/lib/data";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects] = useState<Project[]>(projectsData);
   const [activeProject, setActiveProject] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [shineTrigger, setShineTrigger] = useState(0);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getProjects();
-        setProjects(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    }
-    fetchData();
-  }, []);
 
   useEffect(() => {
     let touchStartY = 0;

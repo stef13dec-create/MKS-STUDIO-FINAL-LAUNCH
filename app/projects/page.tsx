@@ -1,6 +1,14 @@
 "use client";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "motion/react";
+import {
+  motion,
+  useScroll,
+  useMotionValue,
+  useTransform,
+  useMotionValueEvent,
+  AnimatePresence,
+  animate,
+} from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
@@ -58,7 +66,8 @@ function ProjectCard({
             style={{
               opacity: isOtherHovered ? 0.8 : 1,
               filter: isOtherHovered ? "grayscale(1) invert(1)" : "grayscale(0) invert(0)",
-              transition: "opacity 0.8s cubic-bezier(0.25,1,0.5,1), filter 0.8s cubic-bezier(0.25,1,0.5,1), transform 0.8s cubic-bezier(0.25,1,0.5,1)",
+              transition:
+                "opacity 0.8s cubic-bezier(0.25,1,0.5,1), filter 0.8s cubic-bezier(0.25,1,0.5,1), transform 0.8s cubic-bezier(0.25,1,0.5,1)",
             }}
           >
             <Image
@@ -100,6 +109,13 @@ export default function ProjectsPage() {
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set([0]));
   const [stripWidth, setStripWidth] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Single motion value that drives the strip x position (used by both scroll and drag)
+  const dragX = useMotionValue(0);
+  // Separate motion value for the progress bar (0 → 1)
+  const progressMV = useMotionValue(0);
+  const progressBarWidth = useTransform(progressMV, [0, 1], ["0%", "100%"]);
 
   useEffect(() => {
     async function fetchData() {
@@ -133,9 +149,16 @@ export default function ProjectsPage() {
   });
 
   const maxTranslate = Math.max(0, stripWidth - viewportWidth);
-  const x = useTransform(scrollYProgress, [0, 1], [0, -maxTranslate]);
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SCROLL → dragX + progressMV (only when not actively dragging)
+  // ─────────────────────────────────────────────────────────────────────────────
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (!isDragging) {
+      dragX.set(-latest * maxTranslate);
+      progressMV.set(latest);
+    }
+
     if (projects.length === 0) return;
     const projectIndex = Math.min(Math.floor(latest * projects.length), projects.length - 1);
     setActiveIndex(projectIndex);
@@ -147,7 +170,46 @@ export default function ProjectsPage() {
     });
   });
 
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // ─────────────────────────────────────────────────────────────────────────────
+  // DRAG → progressMV + activeIndex (while user is dragging)
+  // ─────────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const unsub = dragX.on("change", (v) => {
+      if (!isDragging || maxTranslate === 0 || projects.length === 0) return;
+      const progress = Math.abs(v) / maxTranslate;
+      progressMV.set(Math.min(Math.max(progress, 0), 1));
+      const idx = Math.min(Math.floor(progress * projects.length), projects.length - 1);
+      setActiveIndex(idx);
+      setRevealedIndices((prev) => {
+        if (prev.has(idx)) return prev;
+        const next = new Set(prev);
+        next.add(idx);
+        return next;
+      });
+    });
+    return unsub;
+  }, [dragX, isDragging, maxTranslate, projects.length, progressMV]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // DOT NAVIGATION — animate strip to the target project
+  // ─────────────────────────────────────────────────────────────────────────────
+  const goToProject = useCallback(
+    (index: number) => {
+      if (projects.length <= 1) return;
+      const targetX = -(index / (projects.length - 1)) * maxTranslate;
+      animate(dragX, targetX, { type: "spring", damping: 38, stiffness: 260, mass: 0.8 });
+      progressMV.set(index / (projects.length - 1));
+      setActiveIndex(index);
+      setRevealedIndices((prev) => {
+        if (prev.has(index)) return prev;
+        const next = new Set(prev);
+        next.add(index);
+        return next;
+      });
+    },
+    [dragX, maxTranslate, projects.length, progressMV]
+  );
+
   const scrollHeight = projects.length > 0 ? `${projects.length * 100}vh` : "400vh";
 
   return (
@@ -169,7 +231,12 @@ export default function ProjectsPage() {
                   className="absolute top-0 left-0 w-full bg-white/60"
                   initial={{ height: "0%" }}
                   animate={{ height: "100%" }}
-                  transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], repeat: Infinity, repeatType: "loop" }}
+                  transition={{
+                    duration: 1.2,
+                    ease: [0.76, 0, 0.24, 1],
+                    repeat: Infinity,
+                    repeatType: "loop",
+                  }}
                 />
               </div>
               <span className="text-[10px] tracking-[0.4em] uppercase text-white/40 font-medium">
@@ -232,8 +299,54 @@ export default function ProjectsPage() {
 
         {/* Bottom Progress Bar */}
         <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/10">
-          <motion.div className="h-full bg-white/60" style={{ width: progressWidth }} />
+          <motion.div className="h-full bg-white/60" style={{ width: progressBarWidth }} />
         </div>
+
+        {/* ── Dot Navigator ─────────────────────────────────────────────────────── */}
+        {!loading && projects.length > 0 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-[10px] pointer-events-auto">
+            {projects.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goToProject(i)}
+                aria-label={`Go to project ${i + 1}`}
+                className="group flex items-center justify-center w-5 h-5"
+              >
+                <span
+                  className="block rounded-full transition-all duration-500"
+                  style={{
+                    width: i === activeIndex ? "20px" : "5px",
+                    height: "5px",
+                    backgroundColor:
+                      i === activeIndex
+                        ? "rgba(255,255,255,0.9)"
+                        : "rgba(255,255,255,0.25)",
+                    boxShadow: i === activeIndex ? "0 0 8px rgba(255,255,255,0.4)" : "none",
+                    transform: i === activeIndex ? "scaleY(1)" : "scaleY(1)",
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Drag hint — fades away after first drag */}
+        {!loading && (
+          <motion.div
+            className="absolute bottom-[52px] left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none"
+            initial={{ opacity: 0.6 }}
+            animate={{ opacity: isDragging ? 0 : 0.6 }}
+            transition={{ duration: 0.4 }}
+          >
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+              <path d="M1 5H13M1 5L4 2M1 5L4 8" stroke="white" strokeOpacity="0.4" strokeWidth="1" strokeLinecap="round"/>
+              <path d="M13 5L10 2M13 5L10 8" stroke="white" strokeOpacity="0.4" strokeWidth="1" strokeLinecap="round"/>
+            </svg>
+            <span className="text-[8px] tracking-[0.25em] uppercase text-white/30 font-medium">
+              Drag to explore
+            </span>
+          </motion.div>
+        )}
 
         <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
           Commercial Interiors
@@ -253,7 +366,17 @@ export default function ProjectsPage() {
           <motion.div
             ref={stripRef}
             className="flex items-start gap-8 md:gap-16 pl-[10vw] md:pl-[15vw] pr-[20vw]"
-            style={{ x }}
+            style={{
+              x: dragX,
+              cursor: isDragging ? "grabbing" : "grab",
+            }}
+            drag="x"
+            dragConstraints={{ left: -maxTranslate, right: 0 }}
+            dragElastic={0.06}
+            dragMomentum={true}
+            dragTransition={{ bounceDamping: 32, bounceStiffness: 280, timeConstant: 220 }}
+            onDragStart={() => setIsDragging(true)}
+            onDragEnd={() => setIsDragging(false)}
           >
             {projects.map((project, i) => (
               <ProjectCard

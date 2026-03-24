@@ -93,6 +93,60 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
     let material: THREE.ShaderMaterial | null = null;
     let mesh: THREE.Mesh | null = null;
 
+    const mouse = new THREE.Vector2(0.5, 0.5);
+    const targetMouse = new THREE.Vector2(0.5, 0.5);
+    let currentTrailIndex = 0;
+    let isHovering = false;
+    let animationFrameId: number;
+    let loopRunning = false;
+
+    // Render loop — self-stops when there's no visual activity
+    const tick = () => {
+      let hasTrailActivity = false;
+
+      for (let i = 0; i < TRAIL_LENGTH; i++) {
+        if (trailData[i * 3 + 2] > 0.0) {
+          trailData[i * 3 + 2] += FADE_SPEED;
+          if (trailData[i * 3 + 2] >= 1.0) {
+            trailData[i * 3 + 2] = 0.0;
+          } else {
+            hasTrailActivity = true;
+          }
+        }
+      }
+
+      if (isHovering) {
+        const dist = mouse.distanceTo(targetMouse);
+        if (dist > 0.001) {
+          mouse.lerp(targetMouse, 0.3);
+          trailData[currentTrailIndex * 3] = mouse.x;
+          trailData[currentTrailIndex * 3 + 1] = mouse.y;
+          trailData[currentTrailIndex * 3 + 2] = 0.01;
+          currentTrailIndex = (currentTrailIndex + 1) % TRAIL_LENGTH;
+        }
+        hasTrailActivity = true;
+      }
+
+      if (material) {
+        material.uniforms.uTrail.value = trailData;
+      }
+
+      renderer.render(scene, camera);
+
+      if (isHovering || hasTrailActivity) {
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        loopRunning = false;
+      }
+    };
+
+    const startLoop = () => {
+      if (!loopRunning) {
+        loopRunning = true;
+        tick();
+      }
+    };
+
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(
       src,
@@ -113,17 +167,14 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
         const geometry = new THREE.PlaneGeometry(2, 2);
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
+        // Initial render to display the image, then loop stops
+        startLoop();
       },
       undefined,
       (err) => {
         console.error(`LiquidImage: failed to load texture "${src}"`, err);
       }
     );
-
-    const mouse = new THREE.Vector2(0.5, 0.5);
-    const targetMouse = new THREE.Vector2(0.5, 0.5);
-    let currentTrailIndex = 0;
-    let isHovering = false;
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
@@ -136,6 +187,7 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
       const rect = container.getBoundingClientRect();
       mouse.x = targetMouse.x = (e.clientX - rect.left) / rect.width;
       mouse.y = targetMouse.y = 1.0 - ((e.clientY - rect.top) / rect.height);
+      startLoop(); // Resume animation on hover
     };
 
     const handleMouseLeave = () => {
@@ -148,6 +200,7 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
       const rect = container.getBoundingClientRect();
       mouse.x = targetMouse.x = (touch.clientX - rect.left) / rect.width;
       mouse.y = targetMouse.y = 1.0 - ((touch.clientY - rect.top) / rect.height);
+      startLoop(); // Resume animation on touch
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -178,42 +231,6 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
     };
 
     window.addEventListener('resize', handleResize);
-
-    let animationFrameId: number;
-
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      for(let i = 0; i < TRAIL_LENGTH; i++) {
-        if (trailData[i * 3 + 2] > 0.0) {
-          trailData[i * 3 + 2] += FADE_SPEED;
-          if (trailData[i * 3 + 2] >= 1.0) {
-            trailData[i * 3 + 2] = 0.0;
-          }
-        }
-      }
-
-      if (isHovering) {
-        const dist = mouse.distanceTo(targetMouse);
-        if (dist > 0.001) {
-          mouse.lerp(targetMouse, 0.3);
-          
-          trailData[currentTrailIndex * 3] = mouse.x;
-          trailData[currentTrailIndex * 3 + 1] = mouse.y;
-          trailData[currentTrailIndex * 3 + 2] = 0.01;
-          
-          currentTrailIndex = (currentTrailIndex + 1) % TRAIL_LENGTH;
-        }
-      }
-
-      if (material) {
-        material.uniforms.uTrail.value = trailData;
-      }
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
 
     return () => {
       cancelAnimationFrame(animationFrameId);

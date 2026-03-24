@@ -8,7 +8,7 @@ import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
-import { getProjects, Project } from "@/lib/firebase";
+import { getProject, getProjects, Project } from "@/lib/firebase";
 
 export default function ProjectDetail() {
   const params = useParams();
@@ -18,22 +18,29 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const allProjects = await getProjects();
-        const currentIndex = allProjects.findIndex(p => p.id === id);
-        
+    // Fetch current project by ID (single doc read — fast)
+    getProject(id)
+      .then((proj) => {
+        setProject(proj);
+      })
+      .catch((error) => {
+        console.error("Error fetching project:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    // Fetch next project in parallel without blocking the main render
+    getProjects()
+      .then((allProjects) => {
+        const currentIndex = allProjects.findIndex((p) => p.id === id);
         if (currentIndex !== -1) {
-          setProject(allProjects[currentIndex]);
           setNextProject(allProjects[(currentIndex + 1) % allProjects.length]);
         }
-      } catch (error) {
-        console.error("Error fetching project:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
+      })
+      .catch((error) => {
+        console.error("Error fetching next project:", error);
+      });
   }, [id]);
 
   if (loading) {
@@ -141,7 +148,7 @@ export default function ProjectDetail() {
       {project.gallery && project.gallery.length > 0 && (
         <section className="px-6 md:px-20 pb-40 flex flex-col gap-10 md:gap-20">
           {project.gallery.map((img, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -149,11 +156,14 @@ export default function ProjectDetail() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className={`relative overflow-hidden w-full ${index % 2 === 0 ? 'aspect-[16/9]' : 'aspect-square md:w-[60%] md:ml-auto'}`}
             >
-              <div className="group w-full h-full">
-                <LiquidImage 
-                  src={img} 
-                  alt={`${project.title} Gallery ${index + 1}`} 
-                  className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-105"
+              <div className="group relative w-full h-full">
+                <Image
+                  src={img}
+                  alt={`${project.title} Gallery ${index + 1}`}
+                  fill
+                  loading="lazy"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 80vw"
                 />
               </div>
             </motion.div>

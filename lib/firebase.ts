@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -12,14 +12,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
-
-// Diagnostic log for deployment
-if (typeof window !== 'undefined') {
-  console.log("Firebase Init - ProjectID:", firebaseConfig.projectId ? "FOUND" : "MISSING");
-  if (!firebaseConfig.projectId) {
-    console.error("CRITICAL: NEXT_PUBLIC_FIREBASE_PROJECT_ID is undefined. Check GitHub Secrets.");
-  }
-}
 
 // Initialize Firebase
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);

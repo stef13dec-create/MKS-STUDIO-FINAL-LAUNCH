@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   output: 'export',
+  basePath: process.env.NODE_ENV === 'production' ? '/MKS-STUDIO-FINAL-LAUNCH' : '',
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -22,7 +23,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  basePath: '/MKS-STUDIO-FINAL-LAUNCH',
   trailingSlash: true,
   webpack: (config, { dev }) => {
     if (dev && process.env.DISABLE_HMR === 'true') {

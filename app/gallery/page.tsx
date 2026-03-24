@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import { Accessibility } from "lucide-react";
 import CustomCursor from "@/components/CustomCursor";
 import { getGalleryImages, GalleryImage } from "@/lib/firebase";
-import { useEffect } from "react";
 import { getPath } from "@/lib/utils";
 
 export default function Gallery() {

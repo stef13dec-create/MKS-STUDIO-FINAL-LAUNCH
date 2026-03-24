@@ -116,9 +116,9 @@ export default function Home() {
                 </Link>
 
                 <div className="flex items-center gap-6">
-                  <div className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium opacity-70">
+                  <Link href={getPath("/gallery")} onClick={() => setMenuOpen(false)} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
                     Gallery
-                  </div>
+                  </Link>
                   <button
                     onClick={() => setMenuOpen(false)}
                     className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors relative group"
@@ -211,11 +211,11 @@ export default function Home() {
         {/* Header */}
         <header className="absolute top-0 left-0 w-full p-4 md:p-6 z-40 flex justify-between items-start">
           <Link href={getPath("/")} className="absolute top-0 left-0 p-1 md:p-2 group">
-            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w patch object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w-[150px] object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </Link>
 
           <div className="flex items-center gap-6 ml-auto">
-            <TransitionLink href="/gallery" className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
+            <TransitionLink href={getPath("/gallery")} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
               Gallery
             </TransitionLink>
             <button
@@ -248,7 +248,7 @@ export default function Home() {
         <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
           <div className="hidden md:block">Commercial Interiors</div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex justify-center w-full max-w-[200px]">
-            <TransitionLink href="/projects" className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">
+            <TransitionLink href={getPath("/projects")} className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">
               View All Projects
             </TransitionLink>
           </div>
@@ -274,7 +274,7 @@ export default function Home() {
               onMouseEnter={() => setShineTrigger(prev => prev + 1)}
             >
               {projects[activeProject] && (
-                <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
+                <TransitionLink href={getPath(`/projects/${projects[activeProject].id}`)} className="block w-full h-full" data-cursor-text="VIEW">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeProject}

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip --version)",
+      "Bash(pip install:*)",
+      "Read(//c/Users/Stefan/.config/**)",
+      "Read(//c/Users/Stefan/.config/configstore/**)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); tokens=d.get\\(''''tokens'''',{}\\); print\\(''''has tokens:'''', bool\\(tokens\\)\\)\")",
+      "Bash(npm uninstall:*)"
+    ]
+  }
+}

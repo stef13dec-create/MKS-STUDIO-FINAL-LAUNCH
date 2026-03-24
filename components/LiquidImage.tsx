@@ -148,10 +148,14 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
       }
     };
 
+    const resolvedSrc = src.startsWith('http') || src.startsWith('blob:') || src.startsWith('data:')
+      ? src
+      : (process.env.NODE_ENV === 'production' ? '/MKS-STUDIO-FINAL-LAUNCH' : '') + (src.startsWith('/') ? src : `/${src}`);
+
     const textureLoader = new THREE.TextureLoader();
     textureLoader.crossOrigin = 'anonymous';
     textureLoader.load(
-      src,
+      resolvedSrc,
       (texture) => {
         material = new THREE.ShaderMaterial({
           vertexShader,

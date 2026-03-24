@@ -13,6 +13,14 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+// Diagnostic log for deployment
+if (typeof window !== 'undefined') {
+  console.log("Firebase Init - ProjectID:", firebaseConfig.projectId ? "FOUND" : "MISSING");
+  if (!firebaseConfig.projectId) {
+    console.error("CRITICAL: NEXT_PUBLIC_FIREBASE_PROJECT_ID is undefined. Check GitHub Secrets.");
+  }
+}
+
 // Initialize Firebase
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -45,13 +53,18 @@ export async function getProjects(): Promise<Project[]> {
     console.log("Skipping getProjects() during build (no API key)");
     return [];
   }
-  const projectsCol = collection(db, 'projects');
-  const projectSnapshot = await getDocs(projectsCol);
-  const projectList = projectSnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  } as Project));
-  return projectList;
+  try {
+    const projectsCol = collection(db, 'projects');
+    const projectSnapshot = await getDocs(projectsCol);
+    const projectList = projectSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Project));
+    return projectList;
+  } catch (err) {
+    console.error("Error in getProjects():", err);
+    return [];
+  }
 }
 
 export async function getProject(id: string): Promise<Project | null> {
@@ -59,11 +72,14 @@ export async function getProject(id: string): Promise<Project | null> {
     console.log(`Skipping getProject(${id}) during build (no API key)`);
     return null;
   }
-  const docRef = doc(db, "projects", id);
-  const docSnap = await getDoc(docRef);
-  
-  if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() } as Project;
+  try {
+    const docRef = doc(db, "projects", id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Project;
+    }
+  } catch (err) {
+    console.error(`Error in getProject(${id}):`, err);
   }
   return null;
 }
@@ -73,13 +89,18 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
     console.log("Skipping getGalleryImages() during build (no API key)");
     return [];
   }
-  const galleryCol = collection(db, 'gallery');
-  const gallerySnapshot = await getDocs(galleryCol);
-  const galleryList = gallerySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  } as GalleryImage));
-  return galleryList;
+  try {
+    const galleryCol = collection(db, 'gallery');
+    const gallerySnapshot = await getDocs(galleryCol);
+    const galleryList = gallerySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as GalleryImage));
+    return galleryList;
+  } catch (err) {
+    console.error("Error in getGalleryImages():", err);
+    return [];
+  }
 }
 
 export { app, db, auth, storage };

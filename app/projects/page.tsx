@@ -46,8 +46,8 @@ function ProjectCard({
       onMouseEnter={() => setHoveredProjectIndex(index)}
       onMouseLeave={() => setHoveredProjectIndex(null)}
     >
-      {/* Project Number */}
-      <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
+      {/* Project Number - Hidden on mobile to prevent overlap with logo */}
+      <span className="hidden md:block text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
         {String(index + 1).padStart(2, "0")}
       </span>
 
@@ -277,7 +277,7 @@ export default function ProjectsPage() {
 
         {/* Centered Project Header (PROJECTS | 01 TITLE) */}
         <div className="absolute top-6 md:top-10 left-1/2 -translate-x-1/2 flex items-center justify-center whitespace-nowrap z-50">
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="hidden md:flex items-center gap-2 md:gap-3">
             <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-white/40 font-medium">
               Projects
             </span>
@@ -295,7 +295,7 @@ export default function ProjectsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
-                className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-white/90 font-bold"
+                className="text-[8px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/90 font-bold max-w-[120px] md:max-w-none truncate"
               >
                 {projects[activeIndex]?.title}
               </motion.span>
@@ -354,10 +354,10 @@ export default function ProjectsPage() {
           </motion.div>
         )}
 
-        <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
+        <div className="hidden md:block absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
           Commercial Interiors
         </div>
-        <div className="absolute bottom-6 md:bottom-10 right-6 md:right-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
+        <div className="hidden md:block absolute bottom-6 md:bottom-10 right-6 md:right-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
           &copy;2026
         </div>
       </div>

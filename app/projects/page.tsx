@@ -64,19 +64,19 @@ function ProjectCard({
           data-cursor-text="VIEW"
         >
           <div
-            className="relative w-full h-full transition-all duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[0.97]"
+            className="relative w-full h-full transition-all duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[0.97]"
             style={{
               opacity: isOtherHovered ? 0.8 : 1,
               filter: isOtherHovered ? "grayscale(1) invert(1)" : "grayscale(0) invert(0)",
               transition:
-                "opacity 0.8s cubic-bezier(0.25,1,0.5,1), filter 0.8s cubic-bezier(0.25,1,0.5,1), transform 0.8s cubic-bezier(0.25,1,0.5,1)",
+                "opacity 1.2s cubic-bezier(0.76,0,0.24,1), filter 1.2s cubic-bezier(0.76,0,0.24,1), transform 1.2s cubic-bezier(0.76,0,0.24,1)",
             }}
           >
             <Image
               src={getPath(project.image)}
               alt={project.title}
               fill
-              className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.08]"
+              className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.08]"
               sizes="(max-width: 768px) 80vw, 40vw"
               referrerPolicy="no-referrer"
             />

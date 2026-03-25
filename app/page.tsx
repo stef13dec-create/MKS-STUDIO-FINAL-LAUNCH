@@ -26,6 +26,14 @@ export default function Home() {
   const [shineTrigger, setShineTrigger] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const advance = useCallback((dir: 1 | -1) => {
     if (projects.length === 0) return;
@@ -116,8 +124,8 @@ export default function Home() {
             >
               {/* Header inside menu */}
               <header className="w-full flex justify-between items-start">
-                <Link href="/" className="flex flex-col items-start gap-1 group" onClick={() => setMenuOpen(false)}>
-                  <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+                <Link href="/" className="flex flex-col items-start gap-1 group ml-12 md:ml-20" onClick={() => setMenuOpen(false)}>
+                  <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={150} height={68} className="w-[70px] md:w-[150px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
                 </Link>
 
                 <div className="flex items-center gap-6">
@@ -140,7 +148,7 @@ export default function Home() {
                 <nav>
                   <ul className="flex flex-col gap-4 md:gap-6 text-5xl md:text-7xl lg:text-[7vw] font-sans font-medium uppercase tracking-tighter leading-none">
                     {["Home", "Projects", "About", "Contact"].map((item, i) => (
-                      <li key={item} onMouseEnter={() => setHoveredItem(i)} onMouseLeave={() => setHoveredItem(null)}>
+                      <li key={item} onMouseEnter={() => !isMobile && setHoveredItem(i)} onMouseLeave={() => !isMobile && setHoveredItem(null)}>
                         <Link
                           href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
                           onClick={() => setMenuOpen(false)}
@@ -150,7 +158,7 @@ export default function Home() {
                           <span className="text-2xl md:text-5xl mr-2 md:mr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 md:w-20 flex justify-end overflow-visible">
                             <motion.span
                               initial={{ x: -20 }}
-                              animate={{ x: hoveredItem === i ? 0 : -20 }}
+                              animate={{ x: !isMobile && hoveredItem === i ? 0 : -20 }}
                               transition={{ duration: 0.3 }}
                               className="block"
                             >
@@ -158,14 +166,14 @@ export default function Home() {
                             </motion.span>
                           </span>
                           <motion.div
-                            animate={{ x: hoveredItem === i ? 20 : 0 }}
+                            animate={{ x: !isMobile && hoveredItem === i ? 20 : 0 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
                             className="flex"
                           >
                             {item.split("").map((char, charIndex) => (
                               <motion.span
                                 key={charIndex}
-                                animate={{ rotateY: hoveredItem === i ? 180 : 0 }}
+                                animate={{ rotateY: !isMobile && hoveredItem === i ? 180 : 0 }}
                                 transition={{
                                   duration: 0.6,
                                   ease: [0.76, 0, 0.24, 1],

@@ -9,55 +9,52 @@ import { getPath } from "@/lib/utils";
 
 export default function Contact() {
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#1C1C1C] text-[#E4E3E0] font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#1C1C1C] text-[#E4E3E0] font-sans">
       <CustomCursor />
 
-      {/* LEFT PANEL - Image */}
-      <div className="relative hidden md:block w-1/2 h-full overflow-hidden">
-        {/* Logo top left */}
-        <div className="absolute top-0 left-0 p-1 md:p-2 z-50 mix-blend-difference">
-          <TransitionLink href="/" className="flex flex-col items-start gap-1 group">
-            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
+      {/* Top Bar */}
+      <nav className="flex-shrink-0 w-full z-50 bg-[#1C1C1C]/95 backdrop-blur-sm border-b border-white/5">
+        <div className="flex items-center justify-between px-4 md:px-8 h-12 md:h-14">
+          <TransitionLink href="/" className="group flex-shrink-0">
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={80} height={36} className="w-[60px] md:w-[80px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
+          <div className="flex items-center gap-4 md:gap-8">
+            <TransitionLink href="/" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
+              Home
+            </TransitionLink>
+            <TransitionLink href="/about" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
+              About
+            </TransitionLink>
+          </div>
+        </div>
+      </nav>
+
+      {/* Content Row */}
+      <div className="flex flex-1 min-h-0">
+
+        {/* LEFT PANEL - Image */}
+        <div className="relative hidden md:block w-1/2 h-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={getPath("/projects/bucharest-hq-hero.png")}
+              alt="MKS Studio Architecture Detail"
+              fill
+              className="object-cover"
+              priority
+            />
+          </motion.div>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={getPath("/projects/bucharest-hq-hero.png")}
-            alt="MKS Studio Architecture Detail"
-            fill
-            className="object-cover"
-            priority
-          />
-        </motion.div>
-
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
-
-      {/* RIGHT PANEL - Form & Info */}
-      <div className="relative w-full md:w-1/2 h-full flex flex-col justify-between p-8 md:p-16 lg:p-24 overflow-y-auto">
-
-        {/* Mobile Logo */}
-        <div className="md:hidden mb-4">
-          <TransitionLink href="/" className="flex flex-col items-start gap-1 group">
-            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] sm:w-[180px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
-          </TransitionLink>
-        </div>
-
-        {/* Right Corner Nav */}
-        <div className="absolute top-8 right-8 z-50 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 mix-blend-difference">
-          <TransitionLink href="/about" className="hover:opacity-70 transition-opacity text-white">
-            About
-          </TransitionLink>
-        </div>
-
-        <motion.div
+        {/* RIGHT PANEL - Form & Info */}
+        <div className="relative w-full md:w-1/2 h-full flex flex-col justify-between p-8 md:p-16 lg:p-24 overflow-y-auto">
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
@@ -133,9 +130,10 @@ export default function Contact() {
             <a href="#" className="hover:text-white transition-colors">Instagram</a>
             <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
           </div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
 
+      </div>
     </div>
   );
 }

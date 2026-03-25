@@ -13,19 +13,24 @@ export default function About() {
       <CustomCursor />
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full p-4 md:p-6 z-50 flex justify-between items-start mix-blend-difference">
-        <TransitionLink href="/" className="absolute top-0 left-0 p-1 md:p-2 group">
-          <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={300} height={135} className="w-[140px] md:w-[220px] lg:w-[300px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
-        </TransitionLink>
-        <div className="flex items-center gap-6 ml-auto">
-          <TransitionLink href="/contact" className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
-            Contact
+      <nav className="fixed top-0 left-0 w-full z-50 bg-[#1c1c1c]/95 backdrop-blur-sm border-b border-white/5">
+        <div className="flex items-center justify-between px-4 md:px-8 h-12 md:h-14">
+          <TransitionLink href="/" className="group flex-shrink-0">
+            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={80} height={36} className="w-[60px] md:w-[80px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
+          <div className="flex items-center gap-4 md:gap-8">
+            <TransitionLink href="/" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
+              Home
+            </TransitionLink>
+            <TransitionLink href="/contact" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
+              Contact
+            </TransitionLink>
+          </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="pt-40 md:pt-48 lg:pt-56 pb-20 px-6 md:px-20 lg:px-40 flex flex-col items-center">
+      <main className="pt-24 md:pt-28 pb-20 px-6 md:px-20 lg:px-40 flex flex-col items-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

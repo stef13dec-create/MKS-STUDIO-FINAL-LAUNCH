@@ -275,6 +275,26 @@ export default function ProjectsPage() {
           </div>
         </header>
 
+        {/* Left Indicator - Pill-shaped upward scroll animation (Desktop only) */}
+        <div className="hidden md:flex absolute left-6 md:left-10 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-30 pointer-events-none">
+          <div className="w-[22px] h-[38px] rounded-full border border-white/30 flex justify-center p-1.5 pt-1">
+            <motion.div
+              animate={{
+                y: [18, 0],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              className="w-1 h-1.5 bg-white rounded-full"
+            />
+          </div>
+          <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80 font-medium">Scroll</span>
+        </div>
+
+
         {/* Centered Project Header (PROJECTS | 01 TITLE) */}
         <div className="absolute top-6 md:top-10 left-1/2 -translate-x-1/2 flex items-center justify-center whitespace-nowrap z-50">
           <div className="hidden md:flex items-center gap-2 md:gap-3">

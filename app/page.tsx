@@ -12,12 +12,13 @@ import LiquidImage from "@/components/LiquidImage";
 import { Project, projects as projectsData } from "@/lib/data";
 
 export default function Home() {
-  const [loading, setLoading] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !sessionStorage.getItem("loaderShown");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("loaderShown")) {
+      setLoading(false);
     }
-    return true;
-  });
+  }, []);
   const [projects] = useState<Project[]>(projectsData);
   const [activeProject, setActiveProject] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);

@@ -228,9 +228,21 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Left Indicator */}
+        {/* Left Indicator - Pill-shaped upward scroll animation */}
         <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4 z-30 pointer-events-none">
-          <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/20 flex items-center justify-center">
+          <div className="w-[22px] h-[38px] rounded-full border border-white/30 flex justify-center p-1.5 pt-1">
+            <motion.div
+              animate={{
+                y: [18, 0],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              className="w-1 h-1.5 bg-white rounded-full"
+            />
           </div>
           <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80">Scroll</span>
         </div>

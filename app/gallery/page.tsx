@@ -81,12 +81,6 @@ export default function Gallery() {
 
       {/* LEFT PANEL */}
       <div className="relative w-1/2 h-full overflow-hidden bg-black">
-        {/* Logo top left */}
-        <div className="absolute top-0 left-0 p-1 md:p-2 z-50 mix-blend-difference">
-          <TransitionLink href="/" className="group">
-            <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={240} height={105} className="w-[120px] md:w-[180px] lg:w-[240px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
-          </TransitionLink>
-        </div>
 
         {/* Images */}
         <AnimatePresence initial={false} custom={direction}>
@@ -121,7 +115,7 @@ export default function Gallery() {
       <div className="relative w-1/2 h-full flex items-center justify-center">
 
         {/* Top Left Number */}
-        <div className="absolute top-8 left-8 overflow-hidden h-32 w-32">
+        <div className="absolute top-8 left-8 overflow-hidden h-28 md:h-40 w-32 md:w-48">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentIndex}

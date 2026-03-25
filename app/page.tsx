@@ -12,7 +12,12 @@ import LiquidImage from "@/components/LiquidImage";
 import { Project, projects as projectsData } from "@/lib/data";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !sessionStorage.getItem("loaderShown");
+    }
+    return true;
+  });
   const [projects] = useState<Project[]>(projectsData);
   const [activeProject, setActiveProject] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,7 +41,7 @@ export default function Home() {
     if (isHovered || menuOpen || loading) return;
     const timer = setInterval(() => {
       advance(1);
-    }, 4000);
+    }, 6000);
     return () => clearInterval(timer);
   }, [isHovered, menuOpen, loading, advance]);
 
@@ -74,7 +79,7 @@ export default function Home() {
   return (
     <>
       <CustomCursor />
-      {loading && <Loader onComplete={() => setLoading(false)} />}
+      {loading && <Loader onComplete={() => { sessionStorage.setItem("loaderShown", "1"); setLoading(false); }} />}
 
       {/* Fullscreen Menu */}
       <AnimatePresence>

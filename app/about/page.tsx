@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
+import BackHome from "@/components/BackHome";
 import { getPath } from "@/lib/utils";
 
 export default function About() {
@@ -75,6 +76,8 @@ export default function About() {
             </p>
           </motion.div>
         </div>
+
+        <BackHome />
       </main>
 
       {/* Footer */}

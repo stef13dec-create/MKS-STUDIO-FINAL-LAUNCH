@@ -133,15 +133,13 @@ export default function Gallery() {
         </div>
 
         {/* Top Right Close */}
-        <div className="absolute top-8 right-8 z-50 flex items-center gap-4">
-          <span className="text-xs tracking-widest uppercase font-medium">CLOSE</span>
-          <TransitionLink href="/" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors group">
-            <div className="flex flex-col gap-1.5 transition-transform group-hover:scale-90">
-              <div className="w-4 h-px bg-current" />
-              <div className="w-4 h-px bg-current" />
-            </div>
-          </TransitionLink>
-        </div>
+        <TransitionLink href="/" className="absolute top-8 right-8 z-50 flex items-center gap-4 group cursor-pointer">
+          <span className="text-xs tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">CLOSE</span>
+          <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors relative">
+            <span className="absolute w-4 h-px bg-current rotate-45" />
+            <span className="absolute w-4 h-px bg-current -rotate-45" />
+          </div>
+        </TransitionLink>
 
         {/* Center Image (Next Image Preview) */}
         <div className="relative w-[60%] aspect-[4/3] overflow-hidden">

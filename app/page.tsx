@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,17 +19,29 @@ export default function Home() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [shineTrigger, setShineTrigger] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const advance = useCallback((dir: 1 | -1) => {
+    if (projects.length === 0) return;
+    setIsScrolling(true);
+    setDirection(dir);
+    setActiveProject((prev) => (prev + dir + projects.length) % projects.length);
+    setShineTrigger((prev) => prev + 1);
+    setTimeout(() => setIsScrolling(false), 600);
+  }, [projects.length]);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (isHovered || menuOpen || loading) return;
+    const timer = setInterval(() => {
+      advance(1);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isHovered, menuOpen, loading, advance]);
 
   useEffect(() => {
     let touchStartY = 0;
-
-    const advance = (direction: 1 | -1) => {
-      if (projects.length === 0) return;
-      setIsScrolling(true);
-      setActiveProject((prev) => (prev + direction + projects.length) % projects.length);
-      setShineTrigger((prev) => prev + 1);
-      setTimeout(() => setIsScrolling(false), 600);
-    };
 
     const handleWheel = (e: WheelEvent) => {
       if (isScrolling || menuOpen) return;
@@ -57,7 +69,7 @@ export default function Home() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [isScrolling, menuOpen, projects.length]);
+  }, [isScrolling, menuOpen, advance]);
 
   return (
     <>
@@ -130,7 +142,7 @@ export default function Home() {
                           className="flex items-center group"
                           data-cursor-text="GO"
                         >
-                          <span className="text-2xl md:text-5xl mr-2 md:mr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-8 md:w-12 flex justify-end overflow-hidden">
+                          <span className="text-2xl md:text-5xl mr-2 md:mr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 md:w-20 flex justify-end overflow-visible">
                             <motion.span
                               initial={{ x: -20 }}
                               animate={{ x: hoveredItem === i ? 0 : -20 }}
@@ -259,18 +271,45 @@ export default function Home() {
 
             <div
               className="relative w-[65vw] md:w-[28vw] h-[55vh] md:h-[65vh] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[0.95]"
-              onMouseEnter={() => setShineTrigger(prev => prev + 1)}
+              onMouseEnter={() => {
+                setShineTrigger(prev => prev + 1);
+                setIsHovered(true);
+              }}
+              onMouseLeave={() => setIsHovered(false)}
             >
               {projects[activeProject] && (
                 <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                       key={activeProject}
-                      initial={{ opacity: 0, y: "100%" }}
-                      animate={{ opacity: 1, y: "0%" }}
-                      exit={{ opacity: 0, y: "-100%" }}
-                      transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-                      className="absolute inset-0"
+                      custom={direction}
+                      variants={{
+                        initial: (direction: number) => ({
+                          y: direction > 0 ? "100%" : "-100%",
+                          opacity: 0,
+                          scale: 1.1
+                        }),
+                        animate: {
+                          y: "0%",
+                          opacity: 1,
+                          scale: 1
+                        },
+                        exit: (direction: number) => ({
+                          y: direction > 0 ? "-100%" : "100%",
+                          opacity: 0,
+                          scale: 0.95,
+                          zIndex: 0
+                        })
+                      }}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={{ 
+                        duration: 0.8, 
+                        ease: [0.76, 0, 0.24, 1],
+                        opacity: { duration: 0.4 }
+                      }}
+                      className="absolute inset-0 z-10"
                     >
                       <LiquidImage
                         src={projects[activeProject].image}
@@ -285,14 +324,29 @@ export default function Home() {
 
             {/* Project Info */}
             <div className="flex flex-col items-center text-center overflow-hidden h-12">
-              <AnimatePresence mode="wait">
+              <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                   key={activeProject}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-                  className="flex flex-col items-center"
+                  custom={direction}
+                  variants={{
+                    initial: (direction: number) => ({
+                      y: direction > 0 ? "100%" : "-100%",
+                      opacity: 0
+                    }),
+                    animate: {
+                      y: "0%",
+                      opacity: 1
+                    },
+                    exit: (direction: number) => ({
+                      y: direction > 0 ? "-100%" : "100%",
+                      opacity: 0
+                    })
+                  }}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                  className="absolute flex flex-col items-center"
                 >
                   {projects[activeProject] && (
                     <>

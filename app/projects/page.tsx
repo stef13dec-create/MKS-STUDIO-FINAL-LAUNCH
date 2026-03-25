@@ -78,6 +78,7 @@ function ProjectCard({
               fill
               className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.08]"
               sizes="(max-width: 768px) 80vw, 40vw"
+              loading="eager"
               referrerPolicy="no-referrer"
             />
           </div>
@@ -109,7 +110,7 @@ export default function ProjectsPage() {
   const stripRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredProjectIndex, setHoveredProjectIndex] = useState<number | null>(null);
-  const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set([0]));
+  const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set(projectsData.map((_, i) => i)));
   const [stripWidth, setStripWidth] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);

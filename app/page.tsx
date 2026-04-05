@@ -296,7 +296,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative w-[70vw] md:w-[50vw] aspect-[3/4] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
+              className="relative w-[70vw] md:w-[50vw] aspect-[5/6] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
                 setShineTrigger(prev => prev + 1);
                 setIsHovered(true);

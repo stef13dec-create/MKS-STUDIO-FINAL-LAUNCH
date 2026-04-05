@@ -313,7 +313,7 @@ export default function Home() {
                         initial: (direction: number) => ({
                           y: isMobile ? "0%" : (direction > 0 ? "100%" : "-100%"),
                           opacity: 0,
-                          scale: isMobile ? 1.03 : 1.1
+                          scale: 1.1
                         }),
                         animate: {
                           y: "0%",
@@ -323,7 +323,7 @@ export default function Home() {
                         exit: (direction: number) => ({
                           y: isMobile ? "0%" : (direction > 0 ? "-100%" : "100%"),
                           opacity: 0,
-                          scale: isMobile ? 0.98 : 0.95,
+                          scale: 0.95,
                           zIndex: 0
                         })
                       }}
@@ -357,7 +357,7 @@ export default function Home() {
                   custom={direction}
                   variants={{
                     initial: (direction: number) => ({
-                      y: direction > 0 ? "20px" : "-20px",
+                      y: isMobile ? "0px" : (direction > 0 ? "20px" : "-20px"),
                       opacity: 0
                     }),
                     animate: {
@@ -365,7 +365,7 @@ export default function Home() {
                       opacity: 1
                     },
                     exit: (direction: number) => ({
-                      y: direction > 0 ? "-20px" : "20px",
+                      y: isMobile ? "0px" : (direction > 0 ? "-20px" : "20px"),
                       opacity: 0
                     })
                   }}

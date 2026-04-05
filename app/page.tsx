@@ -219,7 +219,7 @@ export default function Home() {
       </AnimatePresence>
 
       <main 
-        className="relative w-full h-screen overflow-hidden text-white font-sans transition-colors duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]"
+        className="relative w-full h-[100svh] md:h-screen overflow-hidden text-white font-sans transition-colors duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]"
         style={{ backgroundColor: ["#51534E", "#40423D", "#2F312D"][activeProject % 3] }}
       >
         {/* Header */}
@@ -282,7 +282,7 @@ export default function Home() {
         </footer>
 
         {/* Center Content (Text & Image) */}
-        <div className="absolute inset-0 flex flex-col items-center justify-around z-10 pt-[12vh] pb-[6vh] md:pt-0 md:pb-0 md:justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-around z-10 pt-[12svh] pb-[6svh] md:pt-0 md:pb-0 md:justify-center">
           {/* Image Slider */}
           <div className="relative z-20 flex flex-col items-center gap-3 md:gap-6 w-full">
             {/* Top Text */}

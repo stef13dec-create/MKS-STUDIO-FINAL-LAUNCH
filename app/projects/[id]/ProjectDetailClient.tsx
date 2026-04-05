@@ -18,7 +18,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
 
   if (!project) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-[#1a1c18] text-white">
+      <div className="h-[100svh] md:h-screen w-full flex items-center justify-center bg-[#1a1c18] text-white">
         <div className="text-center">
           <h1 className="text-4xl font-sans font-light tracking-widest uppercase mb-4">Project Not Found</h1>
           <TransitionLink href="/" className="underline underline-offset-4 opacity-70 hover:opacity-100 transition-opacity">Back to Home</TransitionLink>
@@ -28,7 +28,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="bg-[#1a1c18] text-white min-h-screen font-sans selection:bg-white selection:text-black">
+    <div className="bg-[#1a1c18] text-white min-h-[100svh] md:min-h-screen font-sans selection:bg-white selection:text-black">
       <CustomCursor />
       
       {/* Navigation Header */}
@@ -53,7 +53,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-[100svh] md:h-screen w-full overflow-hidden">
         <motion.div 
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

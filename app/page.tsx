@@ -243,7 +243,7 @@ export default function Home() {
         </header>
 
         {/* Left Indicator - Pill-shaped upward scroll animation */}
-        <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4 z-30 pointer-events-none">
+        <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 z-30 pointer-events-none">
           <div className="w-[22px] h-[38px] rounded-full border border-white/30 flex justify-center p-1.5 pt-1">
             <motion.div
               animate={{
@@ -296,7 +296,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative w-[85vw] md:w-[50vw] aspect-[2/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
+              className="relative w-[70vw] md:w-[50vw] aspect-[2/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
                 setShineTrigger(prev => prev + 1);
                 setIsHovered(true);
@@ -340,7 +340,7 @@ export default function Home() {
                       <LiquidImage
                         src={projects[activeProject].image}
                         alt={projects[activeProject].title}
-                        fit={projects[activeProject].heroFit || "cover"}
+                        fit={isMobile ? "cover" : (projects[activeProject].heroFit || "cover")}
                         className="transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)]"
                       />
                     </motion.div>

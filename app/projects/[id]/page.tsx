@@ -1,8 +1,8 @@
 import ProjectDetailClient from "./ProjectDetailClient";
+import { projects } from "@/lib/data";
 
 export function generateStaticParams() {
-  // These IDs were extracted from the current Firestore database
-  const projectIds = ["brasov-retreat", "bucharest-hq", "cluj-office", "timisoara-hub"];
+  const projectIds = projects.map((project) => project.id);
   
   return projectIds.map((id) => ({
     id: id,

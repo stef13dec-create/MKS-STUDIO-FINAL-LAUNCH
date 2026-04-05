@@ -296,7 +296,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative w-[65vw] md:w-[28vw] h-[55vh] md:h-[65vh] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[0.95]"
+              className="relative w-[85vw] md:w-[50vw] aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
                 setShineTrigger(prev => prev + 1);
                 setIsHovered(true);
@@ -340,7 +340,8 @@ export default function Home() {
                       <LiquidImage
                         src={projects[activeProject].image}
                         alt={projects[activeProject].title}
-                        className="object-cover transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.1]"
+                        fit={projects[activeProject].heroFit || "cover"}
+                        className="transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)]"
                       />
                     </motion.div>
                   </AnimatePresence>

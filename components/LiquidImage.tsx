@@ -3,25 +3,37 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+// Global texture cache to prevent synchronous decoding lag when LiquidImage mounts
+const textureCache: Record<string, THREE.Texture> = {};
 
 interface LiquidImageProps {
   src: string;
   alt?: string;
   className?: string;
+  fit?: "cover" | "contain";
 }
 
-export default function LiquidImage({ src, alt, className = "" }: LiquidImageProps) {
+export default function LiquidImage({ src, alt, className = "", fit = "contain" }: LiquidImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Force preload of next image if we can guess it? Not needed if cache persists
     if (!containerRef.current) return;
 
     const container = containerRef.current;
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: false, // Turn off antialias for performance
+      alpha: true,
+      powerPreference: "high-performance",
+      precision: "mediump"
+    });
+    
+    // Explicitly limit pixel ratio on mobile
+    const pixelRatio = typeof window !== 'undefined' ? (window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5)) : 1;
+    renderer.setPixelRatio(pixelRatio);
     
     // Set initial size
     const { width, height } = container.getBoundingClientRect();
@@ -50,18 +62,38 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
       uniform vec3 uTrail[${TRAIL_LENGTH}];
       uniform float uDistortionStrength;
       uniform float uRippleRadius;
+      uniform bool uContain;
       
       varying vec2 vUv;
 
       void main() {
-        vec2 ratio = vec2(
-          min((uResolution.x / uResolution.y) / (uImageResolution.x / uImageResolution.y), 1.0),
-          min((uResolution.y / uResolution.x) / (uImageResolution.y / uImageResolution.x), 1.0)
-        );
-        vec2 uv = vec2(
-          vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
-          vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
-        );
+        float s = uResolution.x / uResolution.y;
+        float i = uImageResolution.x / uImageResolution.y;
+        
+        vec2 ratio;
+        if (uContain) {
+          ratio = (s > i) ? vec2(s / i, 1.0) : vec2(1.0, i / s);
+        } else {
+          ratio = (s > i) ? vec2(1.0, i / s) : vec2(s / i, 1.0);
+        }
+
+        // Default to center
+        vec2 uv = (vUv - 0.5) * ratio + 0.5;
+
+        // If cover, align to bottom to prevent clipping the ground of buildings
+        if (!uContain) {
+          // ratio > 1 means the image is being cropped in that dimension.
+          // ratio.y > 1.0 means we are cropping top/bottom.
+          // By default, vUv=0 -> uv=0.5 - ratio.y/2. We want vUv=0 -> uv=0.
+          if (ratio.y > 1.0) {
+            uv.y = vUv.y * ratio.y; // Align to bottom (vUv.y = 0 evaluates to uv.y = 0)
+          }
+        }
+
+        // Discard UVs outside 0-1 range for contain mode
+        if (uContain && (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)) {
+          discard;
+        }
 
         vec2 distortion = vec2(0.0);
 
@@ -152,35 +184,44 @@ export default function LiquidImage({ src, alt, className = "" }: LiquidImagePro
       ? src
       : (process.env.NODE_ENV === 'production' ? '/MKS-STUDIO-FINAL-LAUNCH' : '') + (src.startsWith('/') ? src : `/${src}`);
 
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.crossOrigin = 'anonymous';
-    textureLoader.load(
-      resolvedSrc,
-      (texture) => {
-        material = new THREE.ShaderMaterial({
-          vertexShader,
-          fragmentShader,
-          uniforms: {
-            uTexture: { value: texture },
-            uResolution: { value: new THREE.Vector2(width, height) },
-            uImageResolution: { value: new THREE.Vector2(texture.image.width, texture.image.height) },
-            uTrail: { value: trailData },
-            uDistortionStrength: { value: DISTORTION_STRENGTH },
-            uRippleRadius: { value: RIPPLE_RADIUS }
-          }
-        });
+    const setupMaterial = (texture: THREE.Texture) => {
+      material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          uTexture: { value: texture },
+          uResolution: { value: new THREE.Vector2(width, height) },
+          uImageResolution: { value: new THREE.Vector2((texture.image as HTMLImageElement).width, (texture.image as HTMLImageElement).height) },
+          uTrail: { value: trailData },
+          uDistortionStrength: { value: DISTORTION_STRENGTH },
+          uRippleRadius: { value: RIPPLE_RADIUS },
+          uContain: { value: fit === "contain" }
+        }
+      });
 
-        const geometry = new THREE.PlaneGeometry(2, 2);
-        mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        // Initial render to display the image, then loop stops
-        startLoop();
-      },
-      undefined,
-      (err) => {
-        console.error(`LiquidImage: failed to load texture "${src}"`, err);
-      }
-    );
+      const geometry = new THREE.PlaneGeometry(2, 2);
+      mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+      startLoop();
+    };
+
+    if (textureCache[resolvedSrc]) {
+      setupMaterial(textureCache[resolvedSrc]);
+    } else {
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.crossOrigin = 'anonymous';
+      textureLoader.load(
+        resolvedSrc,
+        (texture) => {
+          textureCache[resolvedSrc] = texture;
+          setupMaterial(texture);
+        },
+        undefined,
+        (err) => {
+          console.error(`LiquidImage: failed to load texture "${src}"`, err);
+        }
+      );
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();

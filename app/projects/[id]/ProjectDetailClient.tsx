@@ -9,6 +9,7 @@ import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
 import { projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
+import { FileText, Download, ExternalLink } from "lucide-react";
 
 export default function ProjectDetailClient({ id }: { id: string }) {
   const project = projectsData.find((p) => p.id === id) ?? null;
@@ -108,6 +109,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
         </div>
       </section>
 
+
       {/* Gallery Section */}
       {project.gallery && project.gallery.length > 0 && (
         <section className="px-6 md:px-20 pb-40 flex flex-col gap-10 md:gap-20">
@@ -121,18 +123,118 @@ export default function ProjectDetailClient({ id }: { id: string }) {
               className={`relative overflow-hidden w-full ${index % 2 === 0 ? 'aspect-[16/9]' : 'aspect-square md:w-[60%] md:ml-auto'}`}
             >
               <div className="group relative w-full h-full">
-                <Image
-                  src={getPath(img)}
-                  alt={`${project.title} Gallery ${index + 1}`}
-                  fill
-                  loading="lazy"
-                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 80vw"
-                  referrerPolicy="no-referrer"
-                />
+                {img.endsWith(".mp4") ? (
+                  <video
+                    src={getPath(img)}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={getPath(img)}
+                    alt={`${project.title} Gallery ${index + 1}`}
+                    fill
+                    loading="lazy"
+                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    referrerPolicy="no-referrer"
+                  />
+                )}
               </div>
             </motion.div>
           ))}
+        </section>
+      )}
+
+      {/* Technical Drawings Section */}
+      {project.drawings && project.drawings.length > 0 && (
+        <section className="px-6 py-20 md:px-20 bg-[#121410] border-y border-white/5">
+          <div className="flex flex-col gap-20">
+            <div className="flex flex-col gap-4 max-w-2xl">
+              <span className="text-[10px] tracking-[0.4em] uppercase opacity-50 font-bold">Technical Documentation</span>
+              <h2 className="text-3xl md:text-5xl font-medium tracking-tighter uppercase leading-tight">Project Blueprints & Specifications</h2>
+              <p className="text-sm opacity-40 leading-relaxed max-w-lg mt-2">Comprehensive technical documentation, featuring architectural site plans, detailed floor distributions, and furniture specifications.</p>
+            </div>
+
+            <div className="flex flex-col gap-16">
+              {(() => {
+                const categories: { [key: string]: string[] } = {
+                  "Site & Situation": [],
+                  "Floor Plans": [],
+                  "Facades & Sections": [],
+                  "Technical Details & Specs": [],
+                  "General Documentation": []
+                };
+
+                project.drawings?.forEach(d => {
+                  const filename = d.split('/').pop()?.toUpperCase() || "";
+                  if (filename.startsWith("A0")) categories["Site & Situation"].push(d);
+                  else if (filename.startsWith("A1")) categories["Floor Plans"].push(d);
+                  else if (filename.startsWith("A3")) categories["Facades & Sections"].push(d);
+                  else if (filename.startsWith("A7") || filename.startsWith("A9") || filename.includes("FURNITURE")) categories["Technical Details & Specs"].push(d);
+                  else categories["General Documentation"].push(d);
+                });
+
+                return Object.entries(categories)
+                  .filter(([_, docs]) => docs.length > 0)
+                  .map(([title, docs], groupIndex) => (
+                    <div key={title} className="flex flex-col gap-8">
+                      <div className="flex items-center gap-4">
+                        <div className="h-px bg-white/10 flex-grow" />
+                        <h3 className="text-[10px] tracking-[0.3em] uppercase font-bold opacity-30 whitespace-nowrap">{title}</h3>
+                        <div className="w-10 h-px bg-white/10" />
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {docs.map((drawing, index) => {
+                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace('.pdf', '') || 'Drawing';
+                          return (
+                            <motion.a
+                              key={index}
+                              href={getPath(drawing)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.5, delay: (index % 10) * 0.05 }}
+                              className="group relative flex flex-col aspect-square bg-white border border-black/5 overflow-hidden hover:border-black/20 transition-all duration-500 rounded-sm shadow-sm"
+                            >
+                              {/* Studio Preview Layer */}
+                              <div className="absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden bg-white p-12 pb-28">
+                                <iframe 
+                                  src={`${getPath(drawing)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} 
+                                  className="w-full h-full border-none opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                                  loading="lazy"
+                                />
+                              </div>
+
+                              {/* Content Layer */}
+                              <div className="relative mt-auto p-8 flex flex-col gap-3 z-20 bg-gradient-to-t from-white via-white/90 to-transparent">
+                                <div className="flex items-center gap-4">
+                                  <FileText size={20} className="text-black/30 group-hover:text-black transition-colors" />
+                                  <span className="text-xs tracking-[0.4em] uppercase font-bold text-black/60 group-hover:text-black transition-colors line-clamp-1">
+                                    {fileName}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Hover Highlight */}
+                              <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
+                                <ExternalLink size={18} className="text-black/30" />
+                              </div>
+                            </motion.a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ));
+              })()}
+            </div>
+          </div>
         </section>
       )}
 

@@ -64,7 +64,7 @@ function ProjectCard({
           data-cursor-text="VIEW"
         >
           <div
-            className="relative w-full h-full transition-all duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[0.97]"
+            className="relative w-full h-full transition-all duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.03]"
             style={{
               opacity: isOtherHovered ? 0.8 : 1,
               filter: isOtherHovered ? "grayscale(1) invert(1)" : "grayscale(0) invert(0)",

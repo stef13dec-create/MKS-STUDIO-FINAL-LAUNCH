@@ -269,7 +269,7 @@ export default function Home() {
         </div>
 
         {/* Right Indicator */}
-        <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-30 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 pointer-events-none">
+        <div className="absolute right-6 md:right-10 bottom-24 md:bottom-auto md:top-1/2 md:-translate-y-1/2 z-30 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 pointer-events-none">
           {projects.length > 0 ? (
             <>{activeProject + 1} - {projects.length}</>
           ) : (
@@ -303,7 +303,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative w-[70vw] md:w-[50vw] aspect-[2/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
+              className="relative w-[90vw] md:w-[50vw] aspect-[4/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
                 setShineTrigger(prev => prev + 1);
                 setIsHovered(true);

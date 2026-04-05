@@ -311,9 +311,9 @@ export default function Home() {
                       custom={direction}
                       variants={{
                         initial: (direction: number) => ({
-                          y: direction > 0 ? "100%" : "-100%",
+                          y: isMobile ? "0%" : (direction > 0 ? "100%" : "-100%"),
                           opacity: 0,
-                          scale: 1.1
+                          scale: isMobile ? 1.03 : 1.1
                         }),
                         animate: {
                           y: "0%",
@@ -321,9 +321,9 @@ export default function Home() {
                           scale: 1
                         },
                         exit: (direction: number) => ({
-                          y: direction > 0 ? "-100%" : "100%",
+                          y: isMobile ? "0%" : (direction > 0 ? "-100%" : "100%"),
                           opacity: 0,
-                          scale: 0.95,
+                          scale: isMobile ? 0.98 : 0.95,
                           zIndex: 0
                         })
                       }}

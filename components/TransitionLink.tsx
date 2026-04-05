@@ -1,13 +1,11 @@
 "use client";
 
 import { useTransition } from "./TransitionProvider";
-import { ReactNode } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 
-interface TransitionLinkProps {
+interface TransitionLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
   href: string;
   children: ReactNode;
-  className?: string;
-  [key: string]: any;
 }
 
 export default function TransitionLink({ href, children, className, ...props }: TransitionLinkProps) {

@@ -1,7 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import TransitionLink from "@/components/TransitionLink";
@@ -9,7 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
 import { projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
-import { FileText, Download, ExternalLink } from "lucide-react";
+import { FileText, ExternalLink } from "lucide-react";
 
 export default function ProjectDetailClient({ id }: { id: string }) {
   const project = projectsData.find((p) => p.id === id) ?? null;
@@ -180,7 +179,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
 
                 return Object.entries(categories)
                   .filter(([_, docs]) => docs.length > 0)
-                  .map(([title, docs], groupIndex) => (
+                  .map(([title, docs]) => (
                     <div key={title} className="flex flex-col gap-8">
                       <div className="flex items-center gap-4">
                         <div className="h-px bg-white/10 flex-grow" />
@@ -188,7 +187,27 @@ export default function ProjectDetailClient({ id }: { id: string }) {
                         <div className="w-10 h-px bg-white/10" />
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                      <div className="md:hidden flex flex-col gap-3 border border-white/10 bg-white/[0.02]">
+                        {docs.map((drawing, index) => {
+                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace('.pdf', '') || 'Drawing';
+                          return (
+                            <a
+                              key={index}
+                              href={getPath(drawing)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 last:border-b-0 hover:bg-white/5 transition-colors"
+                            >
+                              <span className="text-[10px] tracking-[0.2em] uppercase text-white/80 line-clamp-1">
+                                {fileName}
+                              </span>
+                              <span className="text-[9px] tracking-[0.25em] uppercase text-white/40">Open</span>
+                            </a>
+                          );
+                        })}
+                      </div>
+
+                      <div className="hidden md:grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {docs.map((drawing, index) => {
                           const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace('.pdf', '') || 'Drawing';
                           return (

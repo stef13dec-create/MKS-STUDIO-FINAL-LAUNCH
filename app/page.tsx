@@ -45,6 +45,13 @@ export default function Home() {
     setTimeout(() => setIsScrolling(false), 600);
   }, [projects.length]);
 
+  // Trigger initial shine when loader completes
+  useEffect(() => {
+    if (!loading) {
+      setShineTrigger((prev) => (prev === 0 ? 1 : prev));
+    }
+  }, [loading]);
+
   // Auto-scroll effect
   useEffect(() => {
     if (isHovered || menuOpen || loading) return;
@@ -219,7 +226,7 @@ export default function Home() {
       </AnimatePresence>
 
       <main 
-        className="relative w-full h-[100svh] md:h-screen overflow-hidden text-white font-sans transition-colors duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]"
+        className="relative w-full h-screen overflow-hidden text-white font-sans transition-colors duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]"
         style={{ backgroundColor: ["#51534E", "#40423D", "#2F312D"][activeProject % 3] }}
       >
         {/* Header */}
@@ -242,8 +249,8 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Left Indicator - Pill-shaped upward scroll animation (DESKTOP ONLY) */}
-        <div className="absolute left-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 z-30 pointer-events-none">
+        {/* Left Indicator - Pill-shaped upward scroll animation */}
+        <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 z-30 pointer-events-none">
           <div className="w-[22px] h-[38px] rounded-full border border-white/30 flex justify-center p-1.5 pt-1">
             <motion.div
               animate={{
@@ -258,11 +265,11 @@ export default function Home() {
               className="w-1 h-1.5 bg-white rounded-full"
             />
           </div>
-          <span className="text-[10px] tracking-widest uppercase opacity-80">Scroll</span>
+          <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80">Scroll</span>
         </div>
 
         {/* Right Indicator */}
-        <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-30 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 pointer-events-none hidden md:block">
+        <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-30 text-[10px] md:text-xs tracking-widest uppercase font-medium opacity-80 pointer-events-none">
           {projects.length > 0 ? (
             <>{activeProject + 1} - {projects.length}</>
           ) : (
@@ -282,21 +289,21 @@ export default function Home() {
         </footer>
 
         {/* Center Content (Text & Image) */}
-        <div className="absolute inset-0 flex flex-col items-center justify-around z-10 pt-[12svh] pb-[6svh] md:pt-0 md:pb-0 md:justify-center">
+        <div className="absolute inset-0 flex items-center justify-center z-10">
           {/* Image Slider */}
-          <div className="relative z-20 flex flex-col items-center gap-3 md:gap-6 w-full">
+          <div className="relative z-20 flex flex-col items-center gap-6">
             {/* Top Text */}
             <div className="absolute bottom-full mb-6 md:mb-10 w-full flex justify-center pointer-events-none">
               <h2
                 key={shineTrigger}
-                className={`text-lg md:text-2xl font-sans tracking-[0.4em] pl-[0.4em] uppercase whitespace-nowrap ${shineTrigger > 0 ? 'animate-shine' : 'text-transparent'}`}
+                className={`text-lg md:text-5xl font-sans tracking-[0.4em] pl-[0.4em] uppercase whitespace-nowrap ${shineTrigger > 0 ? 'animate-shine' : 'text-transparent'}`}
               >
                 ICONIC PROJECTS
               </h2>
             </div>
 
             <div
-              className="relative w-full md:w-[50vw] aspect-[4/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] md:hover:scale-[1.05]"
+              className="relative w-[70vw] md:w-[50vw] aspect-[2/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
                 setShineTrigger(prev => prev + 1);
                 setIsHovered(true);
@@ -311,7 +318,7 @@ export default function Home() {
                       custom={direction}
                       variants={{
                         initial: (direction: number) => ({
-                          y: isMobile ? "0%" : (direction > 0 ? "100%" : "-100%"),
+                          y: direction > 0 ? "100%" : "-100%",
                           opacity: 0,
                           scale: 1.1
                         }),
@@ -321,7 +328,7 @@ export default function Home() {
                           scale: 1
                         },
                         exit: (direction: number) => ({
-                          y: isMobile ? "0%" : (direction > 0 ? "-100%" : "100%"),
+                          y: direction > 0 ? "-100%" : "100%",
                           opacity: 0,
                           scale: 0.95,
                           zIndex: 0
@@ -350,14 +357,14 @@ export default function Home() {
             </div>
 
             {/* Project Info */}
-            <div className="relative flex flex-col items-center text-center px-6 mt-2">
+            <div className="flex flex-col items-center text-center overflow-hidden h-12">
               <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                   key={activeProject}
                   custom={direction}
                   variants={{
                     initial: (direction: number) => ({
-                      y: isMobile ? "0px" : (direction > 0 ? "20px" : "-20px"),
+                      y: direction > 0 ? "100%" : "-100%",
                       opacity: 0
                     }),
                     animate: {
@@ -365,7 +372,7 @@ export default function Home() {
                       opacity: 1
                     },
                     exit: (direction: number) => ({
-                      y: isMobile ? "0px" : (direction > 0 ? "-20px" : "20px"),
+                      y: direction > 0 ? "-100%" : "100%",
                       opacity: 0
                     })
                   }}
@@ -373,34 +380,12 @@ export default function Home() {
                   animate="animate"
                   exit="exit"
                   transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                  className="relative flex flex-col items-center"
+                  className="absolute flex flex-col items-center"
                 >
                   {projects[activeProject] && (
                     <>
                       <span className="text-sm md:text-base tracking-[0.2em] pl-[0.2em] uppercase font-medium">{projects[activeProject].title}</span>
                       <span className="text-[10px] md:text-xs tracking-widest pl-[0.1em] uppercase opacity-70 mt-1">{projects[activeProject].subtitle}</span>
-                      
-                      <div className="flex flex-col items-center mt-6 md:hidden pointer-events-none">
-                        <span className="text-[10px] tracking-[0.3em] pl-[0.3em] uppercase opacity-60 font-medium mb-3">
-                          {activeProject + 1} / {projects.length}
-                        </span>
-                        
-                        {/* Mobile Scroll Indicator Inside Flow */}
-                        <div className="w-[16px] h-[28px] rounded-full border border-white/20 flex justify-center p-0.5 pt-0.5 opacity-40">
-                          <motion.div
-                            animate={{
-                              y: [12, 0],
-                              opacity: [0, 1, 0],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: [0.76, 0, 0.24, 1],
-                            }}
-                            className="w-0.5 h-1 bg-white rounded-full"
-                          />
-                        </div>
-                      </div>
                     </>
                   )}
                 </motion.div>

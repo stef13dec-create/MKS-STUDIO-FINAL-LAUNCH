@@ -268,6 +268,10 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
     container.addEventListener('touchmove', handleTouchMove, { passive: true });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
+    const renderFrame = () => {
+      renderer.render(scene, camera);
+    };
+
     const handleResize = () => {
       if (!container) return;
       const { width, height } = container.getBoundingClientRect();
@@ -275,13 +279,36 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       if (material) {
         material.uniforms.uResolution.value.set(width, height);
       }
+      renderFrame();
+    };
+
+    const handleScroll = () => {
+      // Mobile browsers can discard canvas contents when offscreen.
+      // Render one fresh frame when the page scrolls back.
+      renderFrame();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        renderFrame();
+      }
+    };
+
+    const handlePageShow = () => {
+      renderFrame();
     };
 
     window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('pageshow', handlePageShow);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('pageshow', handlePageShow);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (container) {
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('mouseenter', handleMouseEnter);
@@ -299,13 +326,15 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       }
       if (material) {
         material.dispose();
-        if (material.uniforms.uTexture.value) {
+        const texture = material.uniforms.uTexture.value as THREE.Texture | undefined;
+        const isCachedTexture = texture === textureCache[resolvedSrc];
+        if (texture && !isCachedTexture) {
           material.uniforms.uTexture.value.dispose();
         }
       }
       renderer.dispose();
     };
-  }, [src]);
+  }, [src, fit]);
 
   return (
     <div 

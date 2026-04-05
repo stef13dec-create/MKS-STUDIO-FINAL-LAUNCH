@@ -28,11 +28,11 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       antialias: false, // Turn off antialias for performance
       alpha: true,
       powerPreference: "high-performance",
-      precision: "mediump"
+      precision: "highp"
     });
     
     // Explicitly limit pixel ratio on mobile
-    const pixelRatio = typeof window !== 'undefined' ? (window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5)) : 1;
+    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1;
     renderer.setPixelRatio(pixelRatio);
     
     // Set initial size

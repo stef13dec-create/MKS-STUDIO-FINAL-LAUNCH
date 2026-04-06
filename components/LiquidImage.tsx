@@ -28,11 +28,11 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       antialias: false, // Turn off antialias for performance
       alpha: true,
       powerPreference: "high-performance",
-      precision: "highp"
+      precision: "mediump"
     });
     
     // Explicitly limit pixel ratio on mobile
-    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1;
+    const pixelRatio = typeof window !== 'undefined' ? (window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5)) : 1;
     renderer.setPixelRatio(pixelRatio);
     
     // Set initial size
@@ -268,10 +268,6 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
     container.addEventListener('touchmove', handleTouchMove, { passive: true });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-    const renderFrame = () => {
-      renderer.render(scene, camera);
-    };
-
     const handleResize = () => {
       if (!container) return;
       const { width, height } = container.getBoundingClientRect();
@@ -279,36 +275,13 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       if (material) {
         material.uniforms.uResolution.value.set(width, height);
       }
-      renderFrame();
-    };
-
-    const handleScroll = () => {
-      // Mobile browsers can discard canvas contents when offscreen.
-      // Render one fresh frame when the page scrolls back.
-      renderFrame();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        renderFrame();
-      }
-    };
-
-    const handlePageShow = () => {
-      renderFrame();
     };
 
     window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('pageshow', handlePageShow);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('pageshow', handlePageShow);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (container) {
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('mouseenter', handleMouseEnter);
@@ -326,9 +299,7 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
       }
       if (material) {
         material.dispose();
-        const texture = material.uniforms.uTexture.value as THREE.Texture | undefined;
-        const isCachedTexture = texture === textureCache[resolvedSrc];
-        if (texture && !isCachedTexture) {
+        if (material.uniforms.uTexture.value) {
           material.uniforms.uTexture.value.dispose();
         }
       }

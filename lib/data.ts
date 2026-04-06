@@ -111,7 +111,7 @@ export const projects: Project[] = [
     category: "Commercial",
     date: "2024",
     size: "2,800 m²",
-    image: "/projects/ubisoft-craiova/1 hero.jpeg",
+    image: "/projects/ubisoft-craiova/1_hero.jpeg",
     description:
       "A dynamic and technical workspace for Ubisoft's Craiova team, featuring specialized coding zones, creative collaborative hubs, and integrated social spaces designed for the next generation of tech talent.",
     gallery: [
@@ -170,6 +170,30 @@ export const projects: Project[] = [
       "/projects/single-family-house/drawings/1097-630 SECTIONS.pdf",
     ],
   },
+  {
+    id: "a-frame-alex",
+    title: "A-FRAME ALEX",
+    subtitle: "Modern A-Frame Residence",
+    category: "Residential",
+    date: "2024",
+    size: "180 m²",
+    image: "/projects/a-frame-alex/01_SUMMER_1.jpg",
+    description:
+      "A striking A-frame residence designed for a seamless connection with nature. Featuring bold geometry and expansive glass facades, the house offers both a warm winter retreat and an open summer living experience.",
+    gallery: [
+      "/projects/a-frame-alex/01_SUMMER_1.jpg",
+      "/projects/a-frame-alex/01_SUMMER_2.jpg",
+      "/projects/a-frame-alex/01_WINTER.png",
+      "/projects/a-frame-alex/01_WINTER_2.png",
+      "/projects/a-frame-alex/drawings/02_Axonometry.jpg",
+      "/projects/a-frame-alex/drawings/02_Axonometry2.jpg",
+      "/projects/a-frame-alex/drawings/03_ETAJ_2.jpg",
+      "/projects/a-frame-alex/drawings/04_PARTER_2.jpg",
+      "/projects/a-frame-alex/drawings/05_FATADA_PR_2.jpg",
+      "/projects/a-frame-alex/drawings/06_FATADA_SEC_2.jpg",
+    ],
+    drawings: [],
+  },
 ];
 
 export const galleryImages: GalleryImage[] = [
@@ -185,13 +209,18 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: "ubisoft-craiova-hero",
-    src: "/projects/ubisoft-craiova/1 hero.jpeg",
+    src: "/projects/ubisoft-craiova/1_hero.jpeg",
     alt: "Ubisoft Craiova Studio Hero",
   },
   {
     id: "single-family-house-hero",
     src: "/projects/single-family-house/01_HERO_Exterior-Front-Facade-Sunset.png",
     alt: "Single Family House Hero",
+  },
+  {
+    id: "a-frame-alex-hero",
+    src: "/projects/a-frame-alex/01_SUMMER_1.jpg",
+    alt: "A-Frame Alex Hero",
   },
 ];
 

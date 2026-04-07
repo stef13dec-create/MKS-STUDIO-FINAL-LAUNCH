@@ -1,8 +1,10 @@
 "use client";
 import { motion } from "motion/react";
 import TransitionLink from "./TransitionLink";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 export default function BackHome() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center gap-8 py-20 w-full">
       <div className="w-[1px] h-20 bg-white/10" />
@@ -30,10 +32,10 @@ export default function BackHome() {
         </div>
         <div className="flex flex-col items-center gap-1 text-center">
           <span className="text-[10px] tracking-[0.4em] uppercase font-bold text-white/40 group-hover:text-white transition-colors">
-            Back to
+            {t("common.backTo")}
           </span>
           <span className="text-sm tracking-[0.4em] uppercase font-bold text-white group-hover:text-white transition-colors">
-            Home
+            {t("common.home")}
           </span>
         </div>
       </TransitionLink>

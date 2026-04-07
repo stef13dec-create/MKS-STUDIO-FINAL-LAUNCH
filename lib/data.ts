@@ -2,6 +2,9 @@ export interface Project {
   id: string;
   title: string;
   subtitle?: string;
+  titleRo?: string;
+  subtitleRo?: string;
+  descriptionRo?: string;
   category: string;
   date: string;
   size: string;
@@ -23,6 +26,9 @@ export const projects: Project[] = [
     id: "j8-ubisoft-studio",
     title: "J8 UBISOFT STUDIO",
     subtitle: "Creative Workspace",
+    titleRo: "STUDIOUL J8 UBISOFT",
+    subtitleRo: "Spațiu de Lucru Creativ",
+    descriptionRo: "O clădire emblematică pentru Ubisoft la J8, concepută pentru creativitate și colaborare. Spațiul integrează estetică industrială modernă cu zone funcționale, arii sociale specializate și birouri panoramice.",
     category: "Commercial",
     date: "2024",
     size: "4,500 m²",
@@ -75,6 +81,9 @@ export const projects: Project[] = [
     id: "house-voluntari",
     title: "House Voluntari",
     subtitle: "Modern Residential Villa",
+    titleRo: "CASA VOLUNTARI",
+    subtitleRo: "Vilă Rezidențială Modernă",
+    descriptionRo: "O vilă contemporană spectaculoasă în Voluntari, care prioritizează viața indoor-outdoor cu terase generoase, piscină privată și estetică interioară minimalistă.",
     category: "Residential",
     date: "2024",
     size: "350 m²",
@@ -108,6 +117,9 @@ export const projects: Project[] = [
     id: "ubisoft-craiova",
     title: "UBISOFT CRAIOVA STUDIO",
     subtitle: "Creative Tech Hub",
+    titleRo: "STUDIOUL UBISOFT CRAIOVA",
+    subtitleRo: "Hub Tehnologic Creativ",
+    descriptionRo: "Un spațiu de lucru dinamic pentru echipa Ubisoft din Craiova, cu zone specializate de coding, huburi creative colaborative și spații sociale pentru noua generație de talente tech.",
     category: "Commercial",
     date: "2024",
     size: "2,800 m²",
@@ -149,6 +161,9 @@ export const projects: Project[] = [
     id: "casa-op",
     title: "CASA OP",
     subtitle: "Private Residence",
+    titleRo: "CASA OP",
+    subtitleRo: "Reședință Privată",
+    descriptionRo: "O vilă liniștită cu un singur nivel, definită de linii orizontale curate, geamuri generoase și o legătură fluidă interior-exterior. O terasă cu piscină privată și o grădină înconjurătoare încadrează casa în toate anotimpurile.",
     category: "Residential",
     date: "2024",
     size: "—",
@@ -172,6 +187,9 @@ export const projects: Project[] = [
     id: "single-family-house",
     title: "SINGLE FAMILY HOUSE",
     subtitle: "Modern Architectural Residence",
+    titleRo: "CASĂ UNIFAMILIALĂ",
+    subtitleRo: "Reședință Arhitecturală Modernă",
+    descriptionRo: "O reședință modernă unifamilială cu spații de zi open-plan, integrare perfectă interior-exterior și design contemporan sofisticat.",
     category: "Residential",
     date: "2024",
     size: "280 m²",
@@ -197,6 +215,9 @@ export const projects: Project[] = [
     id: "a-frame-alex",
     title: "A-FRAME ALEX",
     subtitle: "Modern A-Frame Residence",
+    titleRo: "A-FRAME ALEX",
+    subtitleRo: "Reședință A-Frame Modernă",
+    descriptionRo: "O reședință A-frame deosebită, concepută pentru o conexiune perfectă cu natura. Cu geometrie îndrăzneață și fațade generoase din sticlă, casa oferă atât un refugiu cald de iarnă, cât și o experiență deschisă de vară.",
     category: "Residential",
     date: "2024",
     size: "180 m²",

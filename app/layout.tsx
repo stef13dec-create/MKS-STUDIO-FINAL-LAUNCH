@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk, Playfair_Display } from 'next/font/google';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { TransitionProvider } from '@/components/TransitionProvider';
@@ -11,6 +11,13 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfa
 export const metadata: Metadata = {
   title: 'MKS Studio | Commercial Interiors',
   description: 'Ultra-modern, highly visual, high-end minimalist commercial interiors portfolio.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#141414',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import TransitionLink from "@/components/TransitionLink";
-import { Accessibility } from "lucide-react";
 import CustomCursor from "@/components/CustomCursor";
 import { GalleryImage, galleryImages as galleryData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
@@ -31,15 +30,9 @@ export default function Gallery() {
   const nextImage = galleryImages[nextImageIndex];
 
   const leftImageVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-    }),
-    center: {
-      x: "0%",
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? "-100%" : "100%",
-    }),
+    enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%" }),
+    center: { x: "0%" },
+    exit: (dir: number) => ({ x: dir > 0 ? "-100%" : "100%" }),
   };
 
   const rightImageVariants = {
@@ -49,23 +42,12 @@ export default function Gallery() {
   };
 
   const numberVariants = {
-    enter: (dir: number) => ({
-      y: dir > 0 ? 100 : -100,
-      opacity: 0,
-    }),
-    center: {
-      y: 0,
-      opacity: 1,
-    },
-    exit: (dir: number) => ({
-      y: dir > 0 ? -100 : 100,
-      opacity: 0,
-    }),
+    enter: (dir: number) => ({ y: dir > 0 ? 100 : -100, opacity: 0 }),
+    center: { y: 0, opacity: 1 },
+    exit: (dir: number) => ({ y: dir > 0 ? -100 : 100, opacity: 0 }),
   };
 
-  const formatNumber = (num: number) => {
-    return num.toString().padStart(2, '0');
-  };
+  const formatNumber = (num: number) => num.toString().padStart(2, "0");
 
   if (!currentImage) {
     return (
@@ -76,13 +58,12 @@ export default function Gallery() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#51524c] text-white font-sans">
+    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-[#51524c] text-white font-sans">
       <CustomCursor />
 
-      {/* LEFT PANEL */}
-      <div className="relative w-1/2 h-full overflow-hidden bg-black">
+      {/* ── MAIN IMAGE PANEL ─────────────────────────────────────────── */}
+      <div className="relative w-full md:w-1/2 h-[62vh] md:h-full flex-shrink-0 overflow-hidden bg-black">
 
-        {/* Images */}
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentIndex}
@@ -105,17 +86,31 @@ export default function Gallery() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Bottom Left Text */}
-        <div className="absolute bottom-8 left-8 z-50 mix-blend-difference">
+        {/* Close button — mobile only, overlaid on image */}
+        <TransitionLink
+          href="/"
+          className="absolute top-4 right-4 z-50 md:hidden flex items-center gap-3 group"
+        >
+          <span className="text-[10px] tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">
+            CLOSE
+          </span>
+          <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors relative">
+            <span className="absolute w-3.5 h-px bg-current rotate-45" />
+            <span className="absolute w-3.5 h-px bg-current -rotate-45" />
+          </div>
+        </TransitionLink>
+
+        {/* Bottom label — desktop only */}
+        <div className="absolute bottom-8 left-8 z-50 mix-blend-difference hidden md:block">
           <span className="text-xs tracking-widest uppercase font-medium">COMMERCIAL INTERIORS</span>
         </div>
       </div>
 
-      {/* RIGHT PANEL */}
-      <div className="relative w-1/2 h-full flex items-center justify-center">
+      {/* ── CONTROLS PANEL ───────────────────────────────────────────── */}
+      <div className="relative w-full md:w-1/2 flex-1 md:h-full flex items-center justify-center">
 
-        {/* Top Left Number */}
-        <div className="absolute top-8 left-8 overflow-hidden h-28 md:h-40 w-32 md:w-48">
+        {/* Animated number */}
+        <div className="absolute top-4 md:top-8 left-4 md:left-8 overflow-hidden h-16 md:h-40 w-20 md:w-48">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentIndex}
@@ -125,24 +120,29 @@ export default function Gallery() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-              className="absolute inset-0 text-[6rem] md:text-[8rem] leading-none font-light tracking-tighter"
+              className="absolute inset-0 text-[3rem] md:text-[8rem] leading-none font-light tracking-tighter"
             >
               {formatNumber(currentIndex + 1)}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Top Right Close */}
-        <TransitionLink href="/" className="absolute top-8 right-8 z-50 flex items-center gap-4 group cursor-pointer">
-          <span className="text-xs tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">CLOSE</span>
+        {/* Close button — desktop only */}
+        <TransitionLink
+          href="/"
+          className="absolute top-8 right-8 z-50 hidden md:flex items-center gap-4 group cursor-pointer"
+        >
+          <span className="text-xs tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">
+            CLOSE
+          </span>
           <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors relative">
             <span className="absolute w-4 h-px bg-current rotate-45" />
             <span className="absolute w-4 h-px bg-current -rotate-45" />
           </div>
         </TransitionLink>
 
-        {/* Center Image (Next Image Preview) */}
-        <div className="relative w-[60%] aspect-[4/3] overflow-hidden">
+        {/* Next image preview — desktop only */}
+        <div className="relative hidden md:block w-[60%] aspect-[4/3] overflow-hidden">
           <AnimatePresence initial={false} mode="wait">
             <motion.div
               key={nextImageIndex}
@@ -164,46 +164,39 @@ export default function Gallery() {
           </AnimatePresence>
         </div>
 
-        {/* PREV Button */}
+        {/* PREV button */}
         <button
           onClick={prevSlide}
-          className="absolute left-8 top-1/2 -translate-y-1/2 text-xs tracking-widest uppercase font-medium hover:opacity-70 transition-opacity z-50"
+          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-[10px] md:text-xs tracking-widest uppercase font-medium hover:opacity-70 transition-opacity z-50 py-2 px-1"
           data-cursor-effect="true"
+          aria-label="Previous image"
         >
           PREV
         </button>
 
-        {/* NEXT Button */}
+        {/* NEXT button */}
         <button
           onClick={nextSlide}
-          className="absolute right-8 top-1/2 -translate-y-1/2 text-xs tracking-widest uppercase font-medium hover:opacity-70 transition-opacity z-50"
+          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-[10px] md:text-xs tracking-widest uppercase font-medium hover:opacity-70 transition-opacity z-50 py-2 px-1"
           data-cursor-effect="true"
+          aria-label="Next image"
         >
           NEXT
         </button>
 
-        {/* Bottom Left Counter */}
-        <div className="absolute bottom-8 left-8">
-          <span className="text-xs tracking-widest font-medium">
-            {formatNumber(currentIndex + 1)} - {formatNumber(galleryImages.length)}
+        {/* Counter */}
+        <div className="absolute bottom-4 md:bottom-8 left-4 md:left-8">
+          <span className="text-[10px] md:text-xs tracking-widest font-medium">
+            {formatNumber(currentIndex + 1)} — {formatNumber(galleryImages.length)}
           </span>
         </div>
 
-        {/* Bottom Center Text */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <span className="text-xs tracking-widest uppercase font-medium">INTERIORS GALLERY</span>
+        {/* Centre label */}
+        <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2">
+          <span className="text-[10px] md:text-xs tracking-widest uppercase font-medium">
+            INTERIORS GALLERY
+          </span>
         </div>
-
-        {/* Bottom Right Icons */}
-        <div className="absolute bottom-8 right-8 flex items-center gap-3">
-          <button
-            aria-label="Accessibility options"
-            className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-black transition-colors"
-          >
-            <Accessibility size={14} />
-          </button>
-        </div>
-
       </div>
     </div>
   );

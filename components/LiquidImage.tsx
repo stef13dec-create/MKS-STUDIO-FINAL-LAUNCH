@@ -32,7 +32,7 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
     });
     
     // Explicitly limit pixel ratio on mobile
-    const pixelRatio = typeof window !== 'undefined' ? (window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5)) : 1;
+    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1;
     renderer.setPixelRatio(pixelRatio);
     
     // Set initial size
@@ -308,10 +308,12 @@ export default function LiquidImage({ src, alt, className = "", fit = "contain" 
   }, [src, fit]);
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className={`w-full h-full overflow-hidden ${className}`}
       style={{ position: 'relative' }}
+      aria-label={alt}
+      role="img"
     />
   );
 }

@@ -292,7 +292,7 @@ export default function ProjectsPage() {
               className="w-1 h-1.5 bg-white rounded-full"
             />
           </div>
-          <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80 font-medium">Scroll</span>
+          <span className="text-[10px] md:text-[11px] tracking-widest uppercase opacity-80 font-medium">Scroll</span>
         </div>
 
 
@@ -369,16 +369,16 @@ export default function ProjectsPage() {
               <path d="M1 5H13M1 5L4 2M1 5L4 8" stroke="white" strokeOpacity="0.4" strokeWidth="1" strokeLinecap="round"/>
               <path d="M13 5L10 2M13 5L10 8" stroke="white" strokeOpacity="0.4" strokeWidth="1" strokeLinecap="round"/>
             </svg>
-            <span className="text-[8px] tracking-[0.25em] uppercase text-white/30 font-medium">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-medium">
               Drag to explore
             </span>
           </motion.div>
         )}
 
-        <div className="hidden md:block absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
+        <div className="hidden md:block absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-white/50 font-medium">
           Commercial Interiors
         </div>
-        <div className="hidden md:block absolute bottom-6 md:bottom-10 right-6 md:right-10 text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-white/50 font-medium">
+        <div className="hidden md:block absolute bottom-6 md:bottom-10 right-6 md:right-10 text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-white/50 font-medium">
           &copy;2026
         </div>
       </div>

@@ -278,7 +278,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
+        <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[10px] md:text-[11px] tracking-widest uppercase font-medium opacity-80">
           <div className="hidden md:block">Commercial Interiors</div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex justify-center w-full max-w-[200px]">
             <TransitionLink href="/projects" className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">

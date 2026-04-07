@@ -7,6 +7,7 @@ import TransitionLink from "@/components/TransitionLink";
 import Loader from "@/components/Loader";
 import CustomCursor from "@/components/CustomCursor";
 import { getPath } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 import LiquidImage from "@/components/LiquidImage";
 import { Project, projects as projectsData } from "@/lib/data";
@@ -28,6 +29,7 @@ export default function Home() {
   const [direction, setDirection] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { t, lang, setLang } = useTranslation();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -138,7 +140,7 @@ export default function Home() {
 
                 <div className="flex items-center gap-6">
                   <Link href="/gallery" onClick={() => setMenuOpen(false)} className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
-                    Gallery
+                    {t("nav.gallery")}
                   </Link>
                   <button
                     onClick={() => setMenuOpen(false)}
@@ -155,10 +157,15 @@ export default function Home() {
               <div className="flex-1 flex items-center justify-between mt-10 md:mt-20">
                 <nav>
                   <ul className="flex flex-col gap-4 md:gap-6 text-5xl md:text-7xl lg:text-[7vw] font-sans font-medium uppercase tracking-tighter leading-none">
-                    {["Home", "Projects", "About", "Contact"].map((item, i) => (
-                      <li key={item} onMouseEnter={() => !isMobile && setHoveredItem(i)} onMouseLeave={() => !isMobile && setHoveredItem(null)}>
+                    {[
+                      { label: t("nav.home"), href: "/" },
+                      { label: t("nav.projects"), href: "/projects" },
+                      { label: t("nav.about"), href: "/about" },
+                      { label: t("nav.contact"), href: "/contact" },
+                    ].map((item, i) => (
+                      <li key={item.href} onMouseEnter={() => !isMobile && setHoveredItem(i)} onMouseLeave={() => !isMobile && setHoveredItem(null)}>
                         <Link
-                          href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                          href={item.href}
                           onClick={() => setMenuOpen(false)}
                           className="flex items-center group"
                           data-cursor-text="GO"
@@ -178,7 +185,7 @@ export default function Home() {
                             transition={{ duration: 0.3, ease: "easeOut" }}
                             className="flex"
                           >
-                            {item.split("").map((char, charIndex) => (
+                            {item.label.split("").map((char, charIndex) => (
                               <motion.span
                                 key={charIndex}
                                 animate={{ rotateY: !isMobile && hoveredItem === i ? 180 : 0 }}
@@ -201,7 +208,7 @@ export default function Home() {
 
                 <div className="hidden md:flex flex-col items-end justify-between h-full py-10 w-1/3">
                   <p className="text-right text-xs md:text-sm tracking-widest leading-relaxed max-w-xs uppercase opacity-80">
-                    Contemporary moods with traditional twists that work together to deliver a unique look and feel for every client.
+                    {t("home.menuDescription")}
                   </p>
                   <div className="text-[15vw] leading-none font-sans font-light tracking-tighter">
                     0{hoveredItem !== null ? hoveredItem + 1 : 1}
@@ -211,10 +218,10 @@ export default function Home() {
 
               {/* Footer inside menu */}
               <footer className="w-full flex justify-between items-end text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-80">
-                <div>Commercial Interiors</div>
+                <div>{t("common.commercialInteriors")}</div>
                 <div className="flex gap-8">
-                  <a href="#" className="hover:opacity-100 transition-opacity">Instagram</a>
-                  <a href="#" className="hover:opacity-100 transition-opacity">Facebook</a>
+                  <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.instagram")}</a>
+                  <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.facebook")}</a>
                 </div>
                 <div className="md:hidden text-6xl leading-none font-sans font-light">
                   0{hoveredItem !== null ? hoveredItem + 1 : 1}
@@ -236,8 +243,13 @@ export default function Home() {
           </Link>
 
           <div className="flex items-center gap-6 ml-auto">
+            <div className="flex items-center gap-1 text-xs tracking-[0.2em] uppercase font-medium">
+              <button onClick={() => setLang("en")} className={lang === "en" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>EN</button>
+              <span className="opacity-20">·</span>
+              <button onClick={() => setLang("ro")} className={lang === "ro" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>RO</button>
+            </div>
             <TransitionLink href="/gallery" className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium hover:opacity-70 transition-opacity">
-              Gallery
+              {t("nav.gallery")}
             </TransitionLink>
             <button
               onClick={() => setMenuOpen(true)}
@@ -265,7 +277,7 @@ export default function Home() {
               className="w-1 h-1.5 bg-white rounded-full"
             />
           </div>
-          <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80">Scroll</span>
+          <span className="text-[8px] md:text-[10px] tracking-widest uppercase opacity-80">{t("common.scroll")}</span>
         </div>
 
         {/* Right Indicator */}
@@ -279,13 +291,13 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:left-10 flex justify-between items-end z-30 text-[10px] md:text-[11px] tracking-widest uppercase font-medium opacity-80">
-          <div className="hidden md:block">Commercial Interiors</div>
+          <div className="hidden md:block">{t("common.commercialInteriors")}</div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex justify-center w-full max-w-[200px]">
             <TransitionLink href="/projects" className="underline underline-offset-4 hover:opacity-100 transition-opacity text-center whitespace-nowrap">
-              View All Projects
+              {t("home.viewAllProjects")}
             </TransitionLink>
           </div>
-          <div className="hidden md:block">&copy;2026</div>
+          <div className="hidden md:block">{t("common.copyright")}</div>
         </footer>
 
         {/* Center Content (Text & Image) */}
@@ -298,7 +310,7 @@ export default function Home() {
                 key={shineTrigger}
                 className={`text-lg md:text-5xl font-sans tracking-[0.4em] pl-[0.4em] uppercase whitespace-nowrap ${shineTrigger > 0 ? 'animate-shine' : 'text-transparent'}`}
               >
-                ICONIC PROJECTS
+                {t("home.iconicProjects")}
               </h2>
             </div>
 
@@ -384,8 +396,8 @@ export default function Home() {
                 >
                   {projects[activeProject] && (
                     <>
-                      <span className="text-sm md:text-base tracking-[0.2em] pl-[0.2em] uppercase font-medium">{projects[activeProject].title}</span>
-                      <span className="text-[10px] md:text-xs tracking-widest pl-[0.1em] uppercase opacity-70 mt-1">{projects[activeProject].subtitle}</span>
+                      <span className="text-sm md:text-base tracking-[0.2em] pl-[0.2em] uppercase font-medium">{lang === "ro" && projects[activeProject].titleRo ? projects[activeProject].titleRo : projects[activeProject].title}</span>
+                      <span className="text-[10px] md:text-xs tracking-widest pl-[0.1em] uppercase opacity-70 mt-1">{lang === "ro" && projects[activeProject].subtitleRo ? projects[activeProject].subtitleRo : projects[activeProject].subtitle}</span>
                     </>
                   )}
                 </motion.div>

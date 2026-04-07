@@ -8,7 +8,9 @@ import CustomCursor from "@/components/CustomCursor";
 import LiquidImage from "@/components/LiquidImage";
 import { projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
-import { FileText, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+
+const isImageDrawing = (path: string) => /\.(jpg|jpeg|png|webp|gif)$/i.test(path);
 
 export default function ProjectDetailClient({ id }: { id: string }) {
   const project = projectsData.find((p) => p.id === id) ?? null;
@@ -187,16 +189,36 @@ export default function ProjectDetailClient({ id }: { id: string }) {
                         <div className="w-10 h-px bg-white/10" />
                       </div>
                       
-                      <div className="md:hidden flex flex-col gap-3 border border-white/10 bg-white/[0.02]">
+                      <div className="md:hidden flex flex-col gap-4">
                         {docs.map((drawing, index) => {
-                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace('.pdf', '') || 'Drawing';
-                          return (
+                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace(/\.(pdf|jpg|jpeg|png|webp)$/i, '') || 'Drawing';
+                          const isImg = isImageDrawing(drawing);
+                          return isImg ? (
+                            /* Image drawing — show as full-width image on mobile */
                             <a
                               key={index}
                               href={getPath(drawing)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 last:border-b-0 hover:bg-white/5 transition-colors"
+                              className="relative w-full aspect-[4/3] overflow-hidden bg-white rounded-sm"
+                            >
+                              <Image
+                                src={getPath(drawing)}
+                                alt={fileName}
+                                fill
+                                className="object-contain p-4"
+                                sizes="100vw"
+                                loading="lazy"
+                              />
+                            </a>
+                          ) : (
+                            /* PDF — text link */
+                            <a
+                              key={index}
+                              href={getPath(drawing)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-between gap-3 px-4 py-3 border border-white/10 bg-white/[0.02] hover:bg-white/5 transition-colors rounded-sm"
                             >
                               <span className="text-[10px] tracking-[0.2em] uppercase text-white/80 line-clamp-1">
                                 {fileName}
@@ -207,9 +229,10 @@ export default function ProjectDetailClient({ id }: { id: string }) {
                         })}
                       </div>
 
-                      <div className="hidden md:grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {docs.map((drawing, index) => {
-                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace('.pdf', '') || 'Drawing';
+                          const fileName = drawing.split('/').pop()?.replace(/_/g, ' ').replace(/\.(pdf|jpg|jpeg|png|webp)$/i, '') || 'Drawing';
+                          const isImg = isImageDrawing(drawing);
                           return (
                             <motion.a
                               key={index}
@@ -220,30 +243,37 @@ export default function ProjectDetailClient({ id }: { id: string }) {
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true }}
                               transition={{ duration: 0.5, delay: (index % 10) * 0.05 }}
-                              className="group relative flex flex-col aspect-square bg-white border border-black/5 overflow-hidden hover:border-black/20 transition-all duration-500 rounded-sm shadow-sm"
+                              className="group relative flex flex-col bg-white border border-black/5 overflow-hidden hover:border-black/20 transition-all duration-500 rounded-sm shadow-sm"
                             >
-                              {/* Studio Preview Layer */}
-                              <div className="absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden bg-white p-12 pb-28">
-                                <iframe 
-                                  src={`${getPath(drawing)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} 
-                                  className="w-full h-full border-none opacity-90 group-hover:opacity-100 transition-opacity duration-700"
-                                  loading="lazy"
-                                />
-                              </div>
-
-                              {/* Content Layer */}
-                              <div className="relative mt-auto p-8 flex flex-col gap-3 z-20 bg-gradient-to-t from-white via-white/90 to-transparent">
-                                <div className="flex items-center gap-4">
-                                  <FileText size={20} className="text-black/30 group-hover:text-black transition-colors" />
-                                  <span className="text-xs tracking-[0.4em] uppercase font-bold text-black/60 group-hover:text-black transition-colors line-clamp-1">
-                                    {fileName}
-                                  </span>
+                              {isImg ? (
+                                /* Image drawing — show full image, taller card */
+                                <div className="relative w-full aspect-[4/3] overflow-hidden bg-white">
+                                  <Image
+                                    src={getPath(drawing)}
+                                    alt={fileName}
+                                    fill
+                                    className="object-contain p-6 group-hover:scale-105 transition-transform duration-700"
+                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                    loading="lazy"
+                                  />
                                 </div>
-                              </div>
+                              ) : (
+                                /* PDF — iframe preview */
+                                <div className="relative aspect-square overflow-hidden bg-white p-10 pb-24 pointer-events-none">
+                                  <iframe
+                                    src={`${getPath(drawing)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`}
+                                    className="w-full h-full border-none opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                                    loading="lazy"
+                                  />
+                                </div>
+                              )}
 
-                              {/* Hover Highlight */}
-                              <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-                                <ExternalLink size={18} className="text-black/30" />
+                              {/* Label */}
+                              <div className="p-5 flex items-center justify-between gap-3 bg-white border-t border-black/5">
+                                <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-black/50 group-hover:text-black transition-colors line-clamp-1">
+                                  {fileName}
+                                </span>
+                                <ExternalLink size={14} className="text-black/20 group-hover:text-black/50 transition-colors flex-shrink-0" />
                               </div>
                             </motion.a>
                           );

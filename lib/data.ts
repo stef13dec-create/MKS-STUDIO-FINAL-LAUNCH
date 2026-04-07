@@ -146,6 +146,29 @@ export const projects: Project[] = [
     ],
   },
   {
+    id: "casa-op",
+    title: "CASA OP",
+    subtitle: "Private Residence",
+    category: "Residential",
+    date: "2024",
+    size: "—",
+    image: "/projects/casa-op/01_HERO_Exterior-Pool-Summer.png",
+    description:
+      "A serene single-storey villa defined by its clean horizontal lines, generous glazing, and seamless indoor-outdoor flow. A private pool terrace and lush garden frame the home across all seasons — from golden summer light to the quiet drama of a snow-covered winter.",
+    gallery: [
+      "/projects/casa-op/02_Exterior-Corner-Garden-Day.png",
+      "/projects/casa-op/03_Exterior-Front-Winter-Night.png",
+      "/projects/casa-op/04_Exterior-Facade-Winter-Night.png",
+      "/projects/casa-op/05_Exterior-Pool-Winter-Lounge.png",
+    ],
+    drawings: [
+      "/projects/casa-op/drawings/01_Drawing-3D-Axonometric.jpg",
+      "/projects/casa-op/drawings/02_Drawing-Site-Plan-Ground-Floor.jpg",
+      "/projects/casa-op/drawings/03_Drawing-Floor-Plan-Detailed.jpg",
+    ],
+    heroFit: "cover",
+  },
+  {
     id: "single-family-house",
     title: "SINGLE FAMILY HOUSE",
     subtitle: "Modern Architectural Residence",
@@ -197,6 +220,11 @@ export const projects: Project[] = [
 ];
 
 export const galleryImages: GalleryImage[] = [
+  {
+    id: "casa-op-hero",
+    src: "/projects/casa-op/01_HERO_Exterior-Pool-Summer.png",
+    alt: "Casa OP — Pool Terrace Summer",
+  },
   {
     id: "j8-hero",
     src: "/projects/j8-ubisoft-studio/1_reception.jpg",

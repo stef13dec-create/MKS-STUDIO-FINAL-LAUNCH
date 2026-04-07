@@ -15,6 +15,8 @@ import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import { Project, projects as projectsData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
+import type { Language } from "@/lib/translations";
 
 // Staggered layout configuration for each project card
 const CARD_CONFIGS = [
@@ -30,12 +32,14 @@ function ProjectCard({
   hoveredProjectIndex,
   setHoveredProjectIndex,
   isVisible,
+  lang,
 }: {
   project: Project;
   index: number;
   hoveredProjectIndex: number | null;
   setHoveredProjectIndex: (val: number | null) => void;
   isVisible: boolean;
+  lang: Language;
 }) {
   const config = CARD_CONFIGS[index % CARD_CONFIGS.length];
   const isOtherHovered = hoveredProjectIndex !== null && hoveredProjectIndex !== index;
@@ -93,7 +97,7 @@ function ProjectCard({
         className="flex flex-col gap-1"
       >
         <span className="text-sm md:text-base tracking-[0.15em] uppercase font-medium text-white">
-          {project.title}
+          {lang === "ro" && project.titleRo ? project.titleRo : project.title}
         </span>
         <span className="text-[10px] tracking-[0.2em] uppercase text-white/50">
           {project.category}
@@ -114,6 +118,7 @@ export default function ProjectsPage() {
   const [stripWidth, setStripWidth] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const { t, lang, setLang } = useTranslation();
 
   // Single motion value that drives the strip x position (used by both scroll and drag)
   const dragX = useMotionValue(0);
@@ -230,7 +235,7 @@ export default function ProjectsPage() {
                 />
               </div>
               <span className="text-[10px] tracking-[0.4em] uppercase text-white/40 font-medium">
-                Loading Projects
+                {t("projects.loadingProjects")}
               </span>
             </div>
           </motion.div>
@@ -258,21 +263,26 @@ export default function ProjectsPage() {
               className="text-xs tracking-[0.2em] uppercase font-bold text-white/90 hover:text-white flex items-center gap-2 group"
             >
               <span className="w-4 h-[1px] bg-white transform -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300" />
-              Home
+              {t("nav.home")}
             </TransitionLink>
             <div className="w-[1px] h-3 bg-white/20" />
             <TransitionLink
               href="/gallery"
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
-              Gallery
+              {t("nav.gallery")}
             </TransitionLink>
             <TransitionLink
               href="/contact"
               className="hidden md:block text-xs tracking-[0.2em] uppercase font-medium text-white/80 hover:text-white transition-colors"
             >
-              Contact
+              {t("nav.contact")}
             </TransitionLink>
+            <div className="flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase font-medium text-white/80">
+              <button onClick={() => setLang("en")} className={lang === "en" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>EN</button>
+              <span className="opacity-20">·</span>
+              <button onClick={() => setLang("ro")} className={lang === "ro" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>RO</button>
+            </div>
           </div>
         </header>
 
@@ -292,7 +302,7 @@ export default function ProjectsPage() {
               className="w-1 h-1.5 bg-white rounded-full"
             />
           </div>
-          <span className="text-[10px] md:text-[11px] tracking-widest uppercase opacity-80 font-medium">Scroll</span>
+          <span className="text-[10px] md:text-[11px] tracking-widest uppercase opacity-80 font-medium">{t("common.scroll")}</span>
         </div>
 
 
@@ -300,7 +310,7 @@ export default function ProjectsPage() {
         <div className="absolute top-6 md:top-10 left-1/2 -translate-x-1/2 flex items-center justify-center whitespace-nowrap z-50">
           <div className="hidden md:flex items-center gap-2 md:gap-3">
             <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-white/40 font-medium">
-              Projects
+              {t("projects.label")}
             </span>
             <span className="text-[10px] md:text-xs text-white/20">|</span>
             <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-white/40 font-medium mr-2 md:mr-4">
@@ -318,7 +328,7 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
                 className="text-[8px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/90 font-bold max-w-[120px] md:max-w-none truncate"
               >
-                {projects[activeIndex]?.title}
+                {lang === "ro" && projects[activeIndex]?.titleRo ? projects[activeIndex].titleRo : projects[activeIndex]?.title}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -370,16 +380,16 @@ export default function ProjectsPage() {
               <path d="M13 5L10 2M13 5L10 8" stroke="white" strokeOpacity="0.4" strokeWidth="1" strokeLinecap="round"/>
             </svg>
             <span className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-medium">
-              Drag to explore
+              {t("common.dragToExplore")}
             </span>
           </motion.div>
         )}
 
         <div className="hidden md:block absolute bottom-6 md:bottom-10 left-6 md:left-10 text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-white/50 font-medium">
-          Commercial Interiors
+          {t("common.commercialInteriors")}
         </div>
         <div className="hidden md:block absolute bottom-6 md:bottom-10 right-6 md:right-10 text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-white/50 font-medium">
-          &copy;2026
+          {t("common.copyright")}
         </div>
       </div>
 
@@ -413,6 +423,7 @@ export default function ProjectsPage() {
                 hoveredProjectIndex={hoveredProjectIndex}
                 setHoveredProjectIndex={setHoveredProjectIndex}
                 isVisible={revealedIndices.has(i)}
+                lang={lang}
               />
             ))}
 
@@ -443,10 +454,10 @@ export default function ProjectsPage() {
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-[10px] tracking-[0.4em] uppercase font-bold text-white/40 group-hover:text-white transition-colors">
-                    Back to
+                    {t("common.backTo")}
                   </span>
                   <span className="text-sm tracking-[0.4em] uppercase font-bold text-white group-hover:text-white transition-colors">
-                    Home
+                    {t("common.home")}
                   </span>
                 </div>
               </TransitionLink>

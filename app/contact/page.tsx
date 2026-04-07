@@ -7,12 +7,14 @@ import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import BackHome from "@/components/BackHome";
 import { getPath } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const { t, lang, setLang } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,11 +37,16 @@ export default function Contact() {
             <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={80} height={36} className="w-[60px] md:w-[80px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
           <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase font-medium">
+              <button onClick={() => setLang("en")} className={lang === "en" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>EN</button>
+              <span className="opacity-20">·</span>
+              <button onClick={() => setLang("ro")} className={lang === "ro" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>RO</button>
+            </div>
             <TransitionLink href="/" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
-              Home
+              {t("nav.home")}
             </TransitionLink>
             <TransitionLink href="/about" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
-              About
+              {t("nav.about")}
             </TransitionLink>
           </div>
         </div>
@@ -76,16 +83,16 @@ export default function Contact() {
             className="mt-8 md:mt-0"
           >
             <h1 className="text-5xl md:text-7xl font-sans font-light tracking-tighter leading-none mb-12">
-              Let&apos;s<br />Talk.
+              {t("contact.heading1")}<br />{t("contact.heading2")}
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
               <div>
-                <h3 className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-4">Email</h3>
+                <h3 className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-4">{t("contact.emailLabel")}</h3>
                 <a href="mailto:hello@mks-studio.com" className="text-lg md:text-xl font-light hover:italic transition-all inline-block hover:translate-x-1 duration-300">hello@mks-studio.com</a>
               </div>
               <div>
-                <h3 className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-4">Phone</h3>
+                <h3 className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-4">{t("contact.phoneLabel")}</h3>
                 <a href="tel:+1234567890" className="text-lg md:text-xl font-light hover:italic transition-all inline-block hover:translate-x-1 duration-300">+1 (234) 567-890</a>
               </div>
             </div>
@@ -100,13 +107,13 @@ export default function Contact() {
                   transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                   className="py-16 flex flex-col gap-4"
                 >
-                  <p className="text-3xl md:text-4xl font-light tracking-tight">Thank you.</p>
-                  <p className="text-sm opacity-50 tracking-widest uppercase">Your email client has been opened — we&apos;ll get back to you soon.</p>
+                  <p className="text-3xl md:text-4xl font-light tracking-tight">{t("contact.thankYou")}</p>
+                  <p className="text-sm opacity-50 tracking-widest uppercase">{t("contact.thankYouSub")}</p>
                   <button
                     onClick={() => { setSubmitted(false); setName(""); setEmail(""); setMessage(""); }}
                     className="mt-6 self-start text-[10px] tracking-[0.2em] uppercase opacity-50 hover:opacity-100 transition-opacity border-b border-current pb-1"
                   >
-                    Send another message
+                    {t("contact.sendAnother")}
                   </button>
                 </motion.div>
               ) : (
@@ -123,7 +130,7 @@ export default function Contact() {
                     <input
                       id="contact-name"
                       type="text"
-                      placeholder="Name"
+                      placeholder={t("contact.namePlaceholder")}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
@@ -137,7 +144,7 @@ export default function Contact() {
                     <input
                       id="contact-email"
                       type="email"
-                      placeholder="Email"
+                      placeholder={t("contact.emailPlaceholder")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -150,7 +157,7 @@ export default function Contact() {
                     <label htmlFor="contact-message" className="sr-only">Message</label>
                     <textarea
                       id="contact-message"
-                      placeholder="Tell us about your project"
+                      placeholder={t("contact.messagePlaceholder")}
                       rows={3}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -165,7 +172,7 @@ export default function Contact() {
                     className="mt-8 px-10 py-5 rounded-full text-[10px] md:text-xs tracking-[0.2em] uppercase border border-white/30 hover:bg-white hover:text-black transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
                     data-cursor-effect="true"
                   >
-                    Send Message
+                    {t("contact.send")}
                   </button>
                 </motion.form>
               )}
@@ -186,8 +193,8 @@ export default function Contact() {
               New York, NY 10012
             </div>
             <div className="text-right flex flex-col gap-1">
-              <a href="#" className="hover:text-white transition-colors">Instagram</a>
-              <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
+              <a href="#" className="hover:text-white transition-colors">{t("footer.instagram")}</a>
+              <a href="#" className="hover:text-white transition-colors">{t("footer.linkedin")}</a>
             </div>
           </motion.div>
         </div>

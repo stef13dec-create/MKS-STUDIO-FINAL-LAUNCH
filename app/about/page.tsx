@@ -6,8 +6,10 @@ import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import BackHome from "@/components/BackHome";
 import { getPath } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 export default function About() {
+  const { t, lang, setLang } = useTranslation();
   return (
     <div className="min-h-screen w-full bg-[#1c1c1c] text-[#E4E3E0] font-sans selection:bg-[#E4E3E0] selection:text-[#1c1c1c]">
       <CustomCursor />
@@ -19,11 +21,16 @@ export default function About() {
             <Image src={getPath("/logo.png")} alt="MKS Studio Logo" width={80} height={36} className="w-[60px] md:w-[80px] h-auto object-contain invert brightness-0 opacity-80 group-hover:opacity-100 transition-opacity" priority />
           </TransitionLink>
           <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase font-medium">
+              <button onClick={() => setLang("en")} className={lang === "en" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>EN</button>
+              <span className="opacity-20">·</span>
+              <button onClick={() => setLang("ro")} className={lang === "ro" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>RO</button>
+            </div>
             <TransitionLink href="/" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
-              Home
+              {t("nav.home")}
             </TransitionLink>
             <TransitionLink href="/contact" className="text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium opacity-70 hover:opacity-100 transition-opacity">
-              Contact
+              {t("nav.contact")}
             </TransitionLink>
           </div>
         </div>
@@ -37,8 +44,8 @@ export default function About() {
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight text-center mb-16"
         >
-          Designing spaces that inspire,<br className="hidden md:block" />
-          elevate, and define.
+          {t("about.heading1")}<br className="hidden md:block" />
+          {t("about.heading2")}
         </motion.h1>
 
         <motion.div
@@ -63,9 +70,9 @@ export default function About() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-xs tracking-[0.3em] uppercase mb-6 opacity-60">Our Philosophy</h2>
+            <h2 className="text-xs tracking-[0.3em] uppercase mb-6 opacity-60">{t("about.philosophyTitle")}</h2>
             <p className="text-lg md:text-xl font-light leading-relaxed text-[#D1D1D1]">
-              At MKS Studio, we believe that the environment you inhabit profoundly impacts your daily life and productivity. Our approach is rooted in contemporary moods intertwined with traditional twists, delivering a unique and highly personalized look for every client.
+              {t("about.philosophyBody")}
             </p>
           </motion.div>
 
@@ -75,9 +82,9 @@ export default function About() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h2 className="text-xs tracking-[0.3em] uppercase mb-6 opacity-60">The Studio</h2>
+            <h2 className="text-xs tracking-[0.3em] uppercase mb-6 opacity-60">{t("about.studioTitle")}</h2>
             <p className="text-lg md:text-xl font-light leading-relaxed text-[#D1D1D1]">
-              Based in the heart of the design district, our studio is a laboratory for aesthetic exploration. We collaborate closely with artisans, architects, and visionaries to execute projects that range from intimate commercial spaces to large-scale corporate headquarters.
+              {t("about.studioBody")}
             </p>
           </motion.div>
         </div>
@@ -87,12 +94,12 @@ export default function About() {
 
       {/* Footer */}
       <footer className="w-full p-6 md:p-10 flex justify-between items-end text-[8px] md:text-[10px] tracking-widest uppercase font-medium opacity-60 border-t border-white/5 mt-20">
-        <div>Commercial Interiors</div>
+        <div>{t("common.commercialInteriors")}</div>
         <div className="flex gap-8">
-          <a href="#" className="hover:opacity-100 transition-opacity">Instagram</a>
-          <a href="#" className="hover:opacity-100 transition-opacity">LinkedIn</a>
+          <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.instagram")}</a>
+          <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.linkedin")}</a>
         </div>
-        <div>&copy;2026 MKS Studio</div>
+        <div>{t("common.copyright")} MKS Studio</div>
       </footer>
     </div>
   );

@@ -7,11 +7,13 @@ import TransitionLink from "@/components/TransitionLink";
 import CustomCursor from "@/components/CustomCursor";
 import { GalleryImage, galleryImages as galleryData } from "@/lib/data";
 import { getPath } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 export default function Gallery() {
   const [galleryImages] = useState<GalleryImage[]>(galleryData);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const { t, lang, setLang } = useTranslation();
 
   const nextSlide = () => {
     if (galleryImages.length === 0) return;
@@ -52,7 +54,7 @@ export default function Gallery() {
   if (!currentImage) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#51524c] text-white">
-        <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">Loading Gallery...</div>
+        <div className="animate-pulse text-xs tracking-[0.4em] uppercase opacity-50">{t("gallery.loadingGallery")}</div>
       </div>
     );
   }
@@ -92,7 +94,7 @@ export default function Gallery() {
           className="absolute top-4 right-4 z-50 md:hidden flex items-center gap-3 group"
         >
           <span className="text-[10px] tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">
-            CLOSE
+            {t("nav.close")}
           </span>
           <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors relative">
             <span className="absolute w-3.5 h-px bg-current rotate-45" />
@@ -102,7 +104,7 @@ export default function Gallery() {
 
         {/* Bottom label — desktop only */}
         <div className="absolute bottom-8 left-8 z-50 mix-blend-difference hidden md:block">
-          <span className="text-xs tracking-widest uppercase font-medium">COMMERCIAL INTERIORS</span>
+          <span className="text-xs tracking-widest uppercase font-medium">{t("common.commercialInteriors")}</span>
         </div>
       </div>
 
@@ -127,13 +129,20 @@ export default function Gallery() {
           </AnimatePresence>
         </div>
 
+        {/* Language toggle */}
+        <div className="absolute top-8 right-24 z-50 hidden md:flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase font-medium">
+          <button onClick={() => setLang("en")} className={lang === "en" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>EN</button>
+          <span className="opacity-20">·</span>
+          <button onClick={() => setLang("ro")} className={lang === "ro" ? "opacity-100" : "opacity-40 hover:opacity-70 transition-opacity"}>RO</button>
+        </div>
+
         {/* Close button — desktop only */}
         <TransitionLink
           href="/"
           className="absolute top-8 right-8 z-50 hidden md:flex items-center gap-4 group cursor-pointer"
         >
           <span className="text-xs tracking-widest uppercase font-medium opacity-70 group-hover:opacity-100 transition-opacity">
-            CLOSE
+            {t("nav.close")}
           </span>
           <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors relative">
             <span className="absolute w-4 h-px bg-current rotate-45" />
@@ -171,7 +180,7 @@ export default function Gallery() {
           data-cursor-effect="true"
           aria-label="Previous image"
         >
-          PREV
+          {t("gallery.prev")}
         </button>
 
         {/* NEXT button */}
@@ -181,7 +190,7 @@ export default function Gallery() {
           data-cursor-effect="true"
           aria-label="Next image"
         >
-          NEXT
+          {t("gallery.next")}
         </button>
 
         {/* Counter */}
@@ -194,7 +203,7 @@ export default function Gallery() {
         {/* Centre label */}
         <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2">
           <span className="text-[10px] md:text-xs tracking-widest uppercase font-medium">
-            INTERIORS GALLERY
+            {t("gallery.title")}
           </span>
         </div>
       </div>

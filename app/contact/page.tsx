@@ -57,7 +57,7 @@ export default function Contact() {
             className="absolute inset-0"
           >
             <Image
-              src={getPath("/projects/bucharest-hq-hero.png")}
+              src={getPath("/contact-hero.png")}
               alt="MKS Studio Architecture Detail"
               fill
               className="object-cover"

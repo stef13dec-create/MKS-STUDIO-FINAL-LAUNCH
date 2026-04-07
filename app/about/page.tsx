@@ -48,7 +48,7 @@ export default function About() {
           className="relative w-full aspect-[21/9] mb-24 overflow-hidden rounded-sm"
         >
           <Image
-            src={getPath("/projects/timisoara-hub-hero.png")}
+            src={getPath("/about-hero.png")}
             alt="MKS Studio Interior"
             fill
             className="object-cover"

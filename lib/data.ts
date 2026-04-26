@@ -212,6 +212,33 @@ export const projects: Project[] = [
     ],
   },
   {
+    id: "garden-house",
+    title: "GARDEN HOUSE",
+    subtitle: "Private Residential Retreat",
+    titleRo: "GARDEN HOUSE",
+    subtitleRo: "Locuință Rezidențială Privată",
+    descriptionRo:
+      "Această locuință este concepută ca un spațiu de protecție, intimitate și conexiune, în care utilizatorii pot socializa și se pot dezvolta împreună cu familia.\n\nLimitele zonelor funcționale (spațiile comune și zonele de studiu) sunt definite prin relația directă cu vegetația, configurând o grădină protejată în care spațiile interioare se extind natural. Astfel, încăperile și grădina sunt percepute ca limite permeabile, într-o continuitate care se desfășoară din interior către exterior și mai departe către parcelă.\n\nSe disting trei grade de intimitate: cel mai ridicat în spațiile interioare, unul intermediar în zonele de tranziție și cel mai deschis în exterior.\n\nZonele casei sunt interconectate prin goluri pe dublă înălțime și spații de tip cameră–grădină, care funcționează ca elemente catalizatoare pentru activitatea domestică.",
+    category: "Residential",
+    date: "2025",
+    size: "100 m²",
+    image: "/projects/garden-house/01_front_render.png",
+    description:
+      "Conceived as a refined domestic retreat, the house explores the interplay between protection, intimacy, and connection, creating a living environment where family life unfolds naturally and cohesively.\n\nThe spatial boundaries between shared and private functions are subtly defined through their direct relationship with vegetation, giving rise to a protected garden that becomes an extension of the interior. In this way, rooms dissolve into a sequence of permeable thresholds, generating a continuous spatial flow from inside to outside and further into the landscape.\n\nA nuanced gradient of privacy is established throughout the house, ranging from the most intimate interior spaces, through transitional zones, and ultimately to the open exterior.\n\nThe architectural composition is articulated through double-height voids and room–garden sequences, conceived as spatial catalysts that animate daily life and foster a dynamic relationship between built form and nature.",
+    gallery: [
+      "/projects/garden-house/01_front_render.png",
+      "/projects/garden-house/02_3d_perspective.jpg",
+      "/projects/garden-house/03_birds_eye_concept.jpg",
+      "/projects/garden-house/04_birds_eye_concept_alt.png",
+      "/projects/garden-house/05_elevations.jpg",
+      "/projects/garden-house/06_section.jpg",
+      "/projects/garden-house/07_ground_floor_plan.jpg",
+      "/projects/garden-house/08_upper_floor_plan.jpg",
+      "/projects/garden-house/09_diagrams.jpg",
+    ],
+    heroFit: "cover",
+  },
+  {
     id: "a-frame-alex",
     title: "A-FRAME ALEX",
     subtitle: "Modern A-Frame Residence",
@@ -270,6 +297,11 @@ export const galleryImages: GalleryImage[] = [
     id: "a-frame-alex-hero",
     src: "/projects/a-frame-alex/01_SUMMER_1.jpg",
     alt: "A-Frame Alex Hero",
+  },
+  {
+    id: "garden-house-hero",
+    src: "/projects/garden-house/01_front_render.png",
+    alt: "Garden House Hero",
   },
 ];
 

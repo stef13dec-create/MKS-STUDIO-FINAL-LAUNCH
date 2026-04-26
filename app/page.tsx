@@ -314,6 +314,7 @@ export default function Home() {
               </h2>
             </div>
 
+            {/* Image container */}
             <div
               className="relative w-[90vw] md:w-[50vw] aspect-[4/3] md:aspect-[3/2] pointer-events-auto overflow-hidden group transition-transform duration-[0.8s] ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-[1.05]"
               onMouseEnter={() => {
@@ -323,37 +324,20 @@ export default function Home() {
               onMouseLeave={() => setIsHovered(false)}
             >
               {projects[activeProject] && (
-                <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full" data-cursor-text="VIEW">
+                <TransitionLink href={`/projects/${projects[activeProject].id}`} className="block w-full h-full cursor-none" data-cursor-text="VIEW">
                   <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                       key={activeProject}
                       custom={direction}
                       variants={{
-                        initial: (direction: number) => ({
-                          y: direction > 0 ? "100%" : "-100%",
-                          opacity: 0,
-                          scale: 1.1
-                        }),
-                        animate: {
-                          y: "0%",
-                          opacity: 1,
-                          scale: 1
-                        },
-                        exit: (direction: number) => ({
-                          y: direction > 0 ? "-100%" : "100%",
-                          opacity: 0,
-                          scale: 0.95,
-                          zIndex: 0
-                        })
+                        initial: (dir: number) => ({ y: dir > 0 ? "100%" : "-100%", opacity: 0, scale: 1.1 }),
+                        animate: { y: "0%", opacity: 1, scale: 1 },
+                        exit: (dir: number) => ({ y: dir > 0 ? "-100%" : "100%", opacity: 0, scale: 0.95 })
                       }}
                       initial="initial"
                       animate="animate"
                       exit="exit"
-                      transition={{ 
-                        duration: 0.8, 
-                        ease: [0.76, 0, 0.24, 1],
-                        opacity: { duration: 0.4 }
-                      }}
+                      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], opacity: { duration: 0.4 } }}
                       className="absolute inset-0 z-10"
                     >
                       <LiquidImage

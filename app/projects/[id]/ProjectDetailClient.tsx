@@ -109,16 +109,19 @@ export default function ProjectDetailClient({ id }: { id: string }) {
           </div>
         </div>
 
-        <div className="md:col-span-8">
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-xl md:text-3xl lg:text-4xl font-light leading-relaxed tracking-tight text-white/90"
-          >
-            {projectDescription}
-          </motion.p>
+        <div className="md:col-span-8 flex flex-col gap-6">
+          {projectDescription.split("\n\n").map((para, i) => (
+            <motion.p
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: "easeOut", delay: i * 0.1 }}
+              className="text-xl md:text-3xl lg:text-4xl font-light leading-relaxed tracking-tight text-white/90"
+            >
+              {para}
+            </motion.p>
+          ))}
         </div>
       </section>
 
@@ -133,30 +136,29 @@ export default function ProjectDetailClient({ id }: { id: string }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className={`relative overflow-hidden w-full ${index % 2 === 0 ? 'aspect-[16/9]' : 'aspect-square md:w-[60%] md:ml-auto'}`}
+              className={`group overflow-hidden w-full ${index % 2 !== 0 ? 'md:w-[60%] md:ml-auto' : ''}`}
             >
-              <div className="group relative w-full h-full">
-                {img.endsWith(".mp4") ? (
-                  <video
-                    src={getPath(img)}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Image
-                    src={getPath(img)}
-                    alt={`${project.title} Gallery ${index + 1}`}
-                    fill
-                    loading="lazy"
-                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 80vw"
-                    referrerPolicy="no-referrer"
-                  />
-                )}
-              </div>
+              {img.endsWith(".mp4") ? (
+                <video
+                  src={getPath(img)}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-auto"
+                />
+              ) : (
+                <Image
+                  src={getPath(img)}
+                  alt={`${project.title} Gallery ${index + 1}`}
+                  width={0}
+                  height={0}
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                  loading="lazy"
+                  className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
+              )}
             </motion.div>
           ))}
         </section>

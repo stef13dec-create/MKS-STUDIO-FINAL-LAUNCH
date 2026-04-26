@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback, memo } from "react";
 import {
   motion,
   useScroll,
@@ -20,13 +20,13 @@ import type { Language } from "@/lib/translations";
 
 // Staggered layout configuration for each project card
 const CARD_CONFIGS = [
-  { widthClass: "w-[80vw] md:w-[35vw]", heightClass: "h-[50vh] md:h-[70vh]", offsetY: "mt-0 md:mt-[5vh]" },
-  { widthClass: "w-[80vw] md:w-[28vw]", heightClass: "h-[45vh] md:h-[55vh]", offsetY: "mt-[5vh] md:mt-[20vh]" },
-  { widthClass: "w-[80vw] md:w-[40vw]", heightClass: "h-[55vh] md:h-[75vh]", offsetY: "mt-0 md:mt-[-2vh]" },
-  { widthClass: "w-[80vw] md:w-[30vw]", heightClass: "h-[45vh] md:h-[60vh]", offsetY: "mt-[5vh] md:mt-[12vh]" },
+  { widthClass: "w-[90vw] md:w-[45vw]", offsetY: "mt-0 md:mt-[5vh]" },
+  { widthClass: "w-[90vw] md:w-[38vw]", offsetY: "mt-[5vh] md:mt-[20vh]" },
+  { widthClass: "w-[90vw] md:w-[50vw]", offsetY: "mt-0 md:mt-[-2vh]" },
+  { widthClass: "w-[90vw] md:w-[40vw]", offsetY: "mt-[5vh] md:mt-[12vh]" },
 ];
 
-function ProjectCard({
+const ProjectCard = memo(function ProjectCard({
   project,
   index,
   hoveredProjectIndex,
@@ -55,37 +55,34 @@ function ProjectCard({
         {String(index + 1).padStart(2, "0")}
       </span>
 
-      {/* Image Container with clip-path reveal */}
+      {/* Image Container with clip-path reveal — natural aspect ratio, no cropping */}
       <motion.div
         initial={{ clipPath: "inset(100% 0 0 0)" }}
         animate={isVisible ? { clipPath: "inset(0% 0 0 0)" } : {}}
         transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-        className={`relative ${config.heightClass} overflow-hidden`}
+        className="overflow-hidden"
       >
         <TransitionLink
           href={`/projects/${project.id}`}
-          className="group block w-full h-full relative"
+          className="group block w-full"
           data-cursor-text="VIEW"
         >
-          <div
-            className="relative w-full h-full transition-all duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.03]"
+          <Image
+            src={getPath(project.image)}
+            alt={project.title}
+            width={0}
+            height={0}
+            sizes="(max-width: 768px) 80vw, 40vw"
+            loading="eager"
+            className="w-full h-auto transition-transform duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.05]"
             style={{
               opacity: isOtherHovered ? 0.8 : 1,
               filter: isOtherHovered ? "grayscale(1) invert(1)" : "grayscale(0) invert(0)",
               transition:
                 "opacity 1.2s cubic-bezier(0.76,0,0.24,1), filter 1.2s cubic-bezier(0.76,0,0.24,1), transform 1.2s cubic-bezier(0.76,0,0.24,1)",
             }}
-          >
-            <Image
-              src={getPath(project.image)}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.08]"
-              sizes="(max-width: 768px) 80vw, 40vw"
-              loading="eager"
-              referrerPolicy="no-referrer"
-            />
-          </div>
+            referrerPolicy="no-referrer"
+          />
         </TransitionLink>
       </motion.div>
 
@@ -105,7 +102,7 @@ function ProjectCard({
       </motion.div>
     </div>
   );
-}
+});
 
 export default function ProjectsPage() {
   const [projects] = useState<Project[]>(projectsData);
@@ -406,6 +403,7 @@ export default function ProjectsPage() {
             style={{
               x: dragX,
               cursor: isDragging ? "grabbing" : "grab",
+              willChange: "transform",
             }}
             drag="x"
             dragConstraints={{ left: -maxTranslate, right: 0 }}
